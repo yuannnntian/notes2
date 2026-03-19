@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox v23.0</title>
+    <title>Beanfield Toolbox v24.0</title>
     <style>
         :root { --primary: #2d8a45; --bg: #f2f7f2; --card: #ffffff; --header: #93cc94; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1c1c1e; -webkit-tap-highlight-color: transparent; }
@@ -123,9 +123,7 @@
                     <div class="toggle-btn active" onclick="setToggle('bf_charge', 'No')">No</div>
                 </div>
             </div>
-            
-            <label>Reason (Closet/No Cat5)</label>
-            <textarea id="bf_reason" rows="2"></textarea>
+            <textarea id="bf_reason" rows="2" placeholder="Reason (Closet/No Cat5)"></textarea>
         </div>
     </div>
 
@@ -147,17 +145,38 @@
 <div class="footer"><button id="copyBtn" class="copy-main" onclick="doCopy()">Copy Jira Report</button></div>
 
 <script>
-// 已加入新增的 1002335 和 1002589
+// 已重新调整 Frequently Used 的内部顺序
 const inventory = {
     "Frequently Used": [
-        {id:"1002335", n:"1m LC APC/APC Patches"}, {id:"1002589", n:"Nokia ONT Mount - Custom"},
-        {id:"1001199", n:"4 port GPON zhone"}, {id:"1002327", n:"NEW ZHONE 2424GN"}, {id:"1002324", n:"XGS Zhone"},
-        {id:"1002557", n:"Nokia XS-010x ONT"}, {id:"1002573", n:"Nokia ONT Mount"},
-        {id:"1002245", n:"GN/XGS Zhone mounts"}, {id:"1000420", n:"Zhone mounts"}, 
-        {id:"1002344", n:"Airties 4960x"}, {id:"1002555", n:"Nokia Beacon"}, {id:"1001083", n:"LC APC connectors"}, 
-        {id:"1000526", n:"Heat sleeves"}, {id:"1002322", n:"Fibre jacks"}, {id:"1002388", n:"APC APC Patches SC-SC"}, 
-        {id:"1000715", n:"Screws (8, 3/4)"}, {id:"1000477", n:"Alchohol wipes"}, {id:"1000289", n:"RJ45 connectors"}, 
-        {id:"1001047", n:"2 port face plates"}, {id:"1000520", n:"White jacks"}, {id:"-", n:"Beanfield Stickers"}, {id:"-", n:"Booties"}
+        // Nokia Group
+        {id:"1002557", n:"Nokia XS-010x ONT"},
+        {id:"1002589", n:"Nokia ONT Mount - Custom"},
+        {id:"1002573", n:"Nokia ONT Mount"},
+        {id:"1002555", n:"Nokia Beacon"},
+        
+        // Zhone Group
+        {id:"1001199", n:"4 port GPON zhone"},
+        {id:"1002327", n:"NEW ZHONE 2424GN"},
+        {id:"1002324", n:"XGS Zhone"},
+        {id:"1002245", n:"GN/XGS Zhone mounts"},
+        {id:"1000420", n:"Zhone mounts"},
+        
+        // Lines & Connectors Group
+        {id:"1002335", n:"1m LC APC/APC Patches"},
+        {id:"1002388", n:"APC APC Patches SC-SC"},
+        {id:"1001083", n:"LC APC connectors"},
+        {id:"1002322", n:"Fibre jacks"},
+        {id:"1000289", n:"RJ45 connectors"},
+        {id:"1000520", n:"White jacks"},
+        
+        // Others
+        {id:"1002344", n:"Airties 4960x"},
+        {id:"1000526", n:"Heat sleeves"},
+        {id:"1000715", n:"Screws (8, 3/4)"},
+        {id:"1000477", n:"Alchohol wipes"},
+        {id:"1001047", n:"2 port face plates"},
+        {id:"-", n:"Beanfield Stickers"},
+        {id:"-", n:"Booties"}
     ],
     "Hardware": [
         {id:"1001087", n:"Active-e zhone"}, {id:"1002556", n:"Nokia XS-220x VOIP ONT"}
