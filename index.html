@@ -1,325 +1,294 @@
-{\rtf1\ansi\ansicpg936\cocoartf2868
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beanfield Toolbox v18.5</title>
+    <style>
+        :root { --primary: #2d8a45; --bg: #f2f7f2; --card: #ffffff; --header: #77b788; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1c1c1e; }
+        .nav-tabs { position: sticky; top: 0; display: flex; background: #fff; padding: 10px; gap: 8px; z-index: 2000; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .tab-btn { flex: 1; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; background: #e8eee8; color: #777; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .page { display: none; padding: 12px; padding-bottom: 220px; }
+        .page.active { display: block; }
+        .card { background: var(--card); border-radius: 12px; margin-bottom: 15px; overflow: hidden; border: 1px solid #d0ddd0; }
+        h3 { margin: 0; font-size: 14px; color: #1a4a2a; background: var(--header); padding: 12px 15px; border-bottom: 1px solid #d0ddd0; font-weight: 700; }
+        .card-body { padding: 15px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        label { display: block; font-size: 11px; font-weight: 700; color: #555; margin-bottom: 4px; text-transform: uppercase; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ced4ce; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fafafa; -webkit-appearance: none; }
+        .toggle-group { display: flex; gap: 5px; }
+        .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ced4ce; background: #fff; font-size: 13px; font-weight: 600; color: #666; text-align: center; }
+        .toggle-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .footer { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #ccc; padding: 15px; box-sizing: border-box; }
+        .copy-main { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 17px; color: white; background: var(--primary); }
+        .tag { display: inline-flex; align-items: center; background: #e8f5e9; color: var(--primary); padding: 5px 10px; border-radius: 6px; margin: 4px; font-size: 13px; border: 1px solid var(--primary); }
+    </style>
+</head>
+<body>
 
-\f0\fs24 \cf0 <!DOCTYPE html>\
-<html lang="en">\
-<head>\
-    <meta charset="UTF-8">\
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">\
-    <title>Beanfield Toolbox v18.0</title>\
-    <style>\
-        :root \{ --primary: #28a745; --bg: #f2f2f7; --card: #ffffff; --text: #1c1c1e; --header: #77b788; \}\
-        body \{ font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-user-select: none; \}\
-        .nav-tabs \{ position: sticky; top: 0; display: flex; background: #fff; padding: 12px; gap: 10px; z-index: 2000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); \}\
-        .tab-btn \{ flex: 1; border: none; padding: 12px 5px; border-radius: 10px; font-size: 12px; font-weight: 700; background: #efeff4; color: #8e8e93; text-transform: uppercase; \}\
-        .tab-btn.active \{ background: var(--primary); color: white; \}\
-        .page \{ display: none; padding: 15px; padding-bottom: 280px; \}\
-        .page.active \{ display: block; \}\
-        .card \{ background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); \}\
-        h3 \{ margin: 0 0 12px 0; font-size: 13px; color: white; background: var(--header); padding: 8px 12px; border-radius: 6px; text-transform: uppercase; font-weight: 700; \}\
-        .field \{ margin-bottom: 12px; \}\
-        .grid-2 \{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; \}\
-        label \{ display: block; font-size: 11px; font-weight: 600; margin-bottom: 4px; color: #666; text-transform: uppercase; \}\
-        input, textarea \{ width: 100%; padding: 10px; border: 1px solid #e5e5ea; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: #fafafa; outline: none; \}\
-        .total-input \{ background: #e8f5e9 !important; border-color: var(--primary) !important; color: var(--primary); font-weight: bold; \}\
-        .toggle-group \{ display: flex; gap: 8px; \}\
-        .toggle-btn \{ flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #e5e5ea; background: #fff; font-size: 13px; font-weight: 600; color: #8e8e93; text-align: center; \}\
-        .toggle-btn.active \{ background: var(--primary); color: white; border-color: var(--primary); \}\
-        .tag-input-wrapper \{ display: flex; gap: 8px; margin-bottom: 10px; \}\
-        .tag-add-btn \{ background: var(--primary); color: white; border: none; border-radius: 10px; padding: 0 15px; font-size: 20px; \}\
-        .tag-container \{ display: flex; flex-wrap: wrap; gap: 8px; \}\
-        .tag \{ background: #e8f5e9; color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--primary); \}\
-        .item-card \{ display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f2f2f7; \}\
-        .qty-ctrl \{ display: flex; align-items: center; gap: 12px; \}\
-        .qty-btn \{ width: 28px; height: 28px; border-radius: 50%; border: none; background: #efeff4; color: var(--primary); font-weight: bold; \}\
-        .footer \{ position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-top: 1px solid #d1d1d6; padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 1500; \}\
-        .copy-main \{ width: 100%; border: none; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 17px; color: white; background: var(--primary); \}\
-    </style>\
-</head>\
-<body>\
-\
-<div class="nav-tabs">\
-    <button class="tab-btn active" onclick="showPage('picker', this)">Materials</button>\
-    <button class="tab-btn" onclick="showPage('beanfield', this)">Full Report</button>\
-</div>\
-\
-<div id="picker" class="page active">\
-    <input type="text" id="matSearch" placeholder="Search SAP or Name..." onkeyup="filterMats()" style="margin-bottom:15px;">\
-    <div id="mat-container"></div>\
-</div>\
-\
-<div id="beanfield" class="page">\
-    <div class="card">\
-        <h3>Technician(s)</h3>\
-        <div class="grid-2">\
-            <div class="field"><label>Inside</label><input type="text" id="bf_in" placeholder="Name"></div>\
-            <div class="field"><label>Outside</label><input type="text" id="bf_out" placeholder="Name"></div>\
-        </div>\
-    </div>\
-\
-    <div class="card">\
-        <h3>Tests Completed</h3>\
-        <div class="grid-2">\
-            <div class="field"><label>Ruby \uc0\u55357 \u57000 </label>\
-                <div class="toggle-group" id="tg_ruby"><div class="toggle-btn active" onclick="setT('tg_ruby','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_ruby','No')">No</div></div>\
-            </div>\
-            <div class="field"><label>Fluke</label>\
-                <div class="toggle-group" id="tg_fluke"><div class="toggle-btn active" onclick="setT('tg_fluke','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_fluke','No')">No</div></div>\
-            </div>\
-        </div>\
-        <label>Light Meter \uc0\u55357 \u56481  (@1577nm)</label>\
-        <div class="grid-2" style="margin-bottom:10px;">\
-            <input type="text" id="bf_l_suite" placeholder="Suite (e.g. -23.01)">\
-            <input type="text" id="bf_l_panel" placeholder="Panel (e.g. -22.65)">\
-        </div>\
-        <label>EXFO \uc0\u55357 \u56563  (D / U)</label>\
-        <div class="grid-2" style="margin-bottom:10px;">\
-            <input type="text" id="bf_exfo_d" placeholder="Down">\
-            <input type="text" id="bf_exfo_u" placeholder="Up">\
-        </div>\
-        <label>WiFi Speed \uc0\u55357 \u56566  (D / U)</label>\
-        <div class="grid-2">\
-            <input type="text" id="bf_wifi_d" placeholder="Down Speed">\
-            <input type="text" id="bf_wifi_u" placeholder="Up Speed">\
-        </div>\
-    </div>\
-\
-    <div class="card">\
-        <h3>Installation Details</h3>\
-        <div class="field">\
-            <label>Primary Device (Zhone/ONT)</label>\
-            <div class="toggle-group" id="tg_pri_type" style="margin-bottom:8px;">\
-                <div class="toggle-btn active" onclick="setPri('Zhone')">Zhone</div>\
-                <div class="toggle-btn" onclick="setPri('ONT')">ONT</div>\
-            </div>\
-            <input type="text" id="bf_z_loc" placeholder="Location" style="margin-bottom:5px;">\
-            <input type="text" id="bf_z_mac" placeholder="MAC Address" style="margin-bottom:5px;">\
-            <input type="text" id="bf_z_mod" placeholder="Model">\
-        </div>\
-        <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">\
-        <div class="field">\
-            <label>Secondary Device (Airties/Beacon)</label>\
-            <div class="toggle-group" id="tg_sec_type" style="margin-bottom:8px;">\
-                <div class="toggle-btn active" onclick="setSec('Airties')">Airties</div>\
-                <div class="toggle-btn" onclick="setSec('Beacon')">Beacon</div>\
-            </div>\
-            <input type="text" id="bf_r_loc" placeholder="Location" style="margin-bottom:5px;">\
-            <input type="text" id="bf_r_mac" placeholder="MAC Address" style="margin-bottom:5px;">\
-            <input type="text" id="bf_r_mod" value="4960x">\
-        </div>\
-    </div>\
-\
-    <div class="card">\
-        <h3>Cat5 Termination</h3>\
-        <div class="grid-2">\
-            <div class="field"><label>Terminated</label><input type="text" id="bf_c5_term" placeholder="e.g. 1/4"></div>\
-            <div class="field"><label>Fluked</label><input type="text" id="bf_c5_fluke" placeholder="e.g. 1/4"></div>\
-        </div>\
-        <div class="field"><label>Plugged into Zhone/ONT</label><input type="text" id="bf_c5_plug" placeholder="e.g. 1/4"></div>\
-        <label>Room Locations & Ports</label>\
-        <div class="tag-input-wrapper">\
-            <input type="text" id="bf_loc_name" placeholder="Room" style="flex:2">\
-            <input type="text" id="bf_loc_port" placeholder="Port#" style="flex:1">\
-            <button class="tag-add-btn" onclick="addLocTag()">+</button>\
-        </div>\
-        <div id="bf_tags" class="tag-container" style="margin-bottom:10px;"></div>\
-        <label>Closet Advisory / Charge Notify</label>\
-        <div class="grid-2">\
-            <div class="toggle-group" id="tg_closet"><div class="toggle-btn" onclick="setT('tg_closet','Yes')">Advised</div><div class="toggle-btn active" onclick="setT('tg_closet','N/A')">N/A</div></div>\
-            <div class="toggle-group" id="tg_charge"><div class="toggle-btn active" onclick="setT('tg_charge','No')">$100 No</div><div class="toggle-btn" onclick="setT('tg_charge','Yes')">$100 Yes</div></div>\
-        </div>\
-    </div>\
-\
-    <div class="card">\
-        <h3>Riser & Fiber</h3>\
-        <div class="grid-2" style="margin-bottom:10px;">\
-            <div class="field"><label>Floor</label><input type="text" id="bf_floor"></div>\
-            <div class="field"><label>Panel / Port</label><input type="text" id="bf_fpp"></div>\
-        </div>\
-        <label>Pre Wired?</label>\
-        <div class="toggle-group" id="tg_prewired" style="margin-bottom:10px;">\
-            <div class="toggle-btn" onclick="setT('tg_prewired','Yes')">Yes</div><div class="toggle-btn active" onclick="setT('tg_prewired','No')">No</div>\
-        </div>\
-        <label>Fiber Marks (meters)</label>\
-        <div style="display:flex; gap:5px; margin-bottom:10px;">\
-            <input type="number" id="bf_m_riser" placeholder="Riser" oninput="calcTotal()">\
-            <input type="number" id="bf_m_suite" placeholder="Suite" oninput="calcTotal()">\
-            <input type="text" id="bf_m_total" class="total-input" readonly placeholder="Total">\
-        </div>\
-        <label>Hub Stock Location</label>\
-        <input type="text" id="bf_hub" value="2206 Eglinton Ave east">\
-    </div>\
-\
-    <div class="card">\
-        <h3>Notes & Times</h3>\
-        <div class="grid-2" style="margin-bottom:10px;">\
-            <div class="field"><label>Arrival</label><input type="time" id="bf_time_a"></div>\
-            <div class="field"><label>Departure</label><input type="time" id="bf_time_d"></div>\
-        </div>\
-        <label>Additional Notes</label>\
-        <textarea id="bf_notes" rows="3" placeholder="Starting point, hurdles, etc."></textarea>\
-        <label style="margin-top:10px;">Parking</label>\
-        <textarea id="bf_parking" rows="2" placeholder="Underground visitor, etc."></textarea>\
-    </div>\
-</div>\
-\
-<div class="footer">\
-    <button id="copyBtn" class="copy-main" onclick="doCopy()">Copy Materials</button>\
-</div>\
-\
-<script>\
-const inventory = \{\
-    "Copper": [\{id:"1000289", n:"RJ45 Connector"\}, \{id:"1001047", n:"2 Port Faceplate"\}, \{id:"1000520", n:"White Jacks"\}],\
-    "Fiber": [\{id:"1001083", n:"LC APC Connector"\}, \{id:"1000526", n:"Heat Sleeve"\}, \{id:"1002388", n:"APC APC Patches SC-SC"\}, \{id:"1002322", n:"Fiber Jack"\}],\
-    "Hardware": [\{id:"1002324", n:"5222XG Zhone"\}, \{id:"1002555", n:"Nokia Beacon 19"\}, \{id:"1002327", n:"2424GN Zhone"\}, \{id:"1002557", n:"Nokia XS-010x ONT"\}],\
-    "Other": [\{id:"1002445", n:"XGS / 2424GN Zhone Mount"\}, \{id:"-", n:"Beanfield Stickers"\}, \{id:"-", n:"Booties"\}]\
-\};\
-\
-let cart = \{\};\
-let toggles = \{ 'tg_ruby': 'Yes', 'tg_fluke': 'Yes', 'tg_pri_type': 'Zhone', 'tg_sec_type': 'Airties', 'tg_closet': 'N/A', 'tg_charge': 'No', 'tg_prewired': 'No' \};\
-let locTags = [];\
-\
-function setT(gid, v) \{\
-    toggles[gid] = v;\
-    document.getElementById(gid).querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.innerText.includes(v)));\
-\}\
-\
-function setPri(type) \{\
-    setT('tg_pri_type', type);\
-    document.getElementById('bf_z_mod').value = (type === 'ONT') ? "XS-010x" : "";\
-\}\
-\
-function setSec(type) \{\
-    setT('tg_sec_type', type);\
-    document.getElementById('bf_r_mod').value = (type === 'Beacon') ? "Nokia Beacon 19" : "4960x";\
-\}\
-\
-function addLocTag() \{\
-    const rm = document.getElementById('bf_loc_name').value.trim();\
-    const pt = document.getElementById('bf_loc_port').value.trim();\
-    if(rm) \{\
-        locTags.push(`$\{rm\} \uc0\u55357 \u57035 \u65039 : $\{pt || '01'\}`);\
-        document.getElementById('bf_loc_name').value = "";\
-        document.getElementById('bf_loc_port').value = "";\
-        renderTags();\
-    \}\
-\}\
-\
-function renderTags() \{\
-    document.getElementById('bf_tags').innerHTML = locTags.map((t, i) => `<div class="tag">$\{t\} <span onclick="locTags.splice($\{i\},1);renderTags()">\'d7</span></div>`).join('');\
-\}\
-\
-function calcTotal() \{\
-    const r = parseFloat(document.getElementById('bf_m_riser').value) || 0;\
-    const s = parseFloat(document.getElementById('bf_m_suite').value) || 0;\
-    document.getElementById('bf_m_total').value = Math.abs(s - r) + "m";\
-\}\
-\
-function render() \{\
-    const cont = document.getElementById('mat-container');\
-    cont.innerHTML = "";\
-    for(let cat in inventory) \{\
-        let h = `<div class="card"><h3>$\{cat\}</h3>`;\
-        inventory[cat].forEach(item => \{\
-            const k = item.id + item.n;\
-            h += `<div class="item-card">\
-                <div><div style="font-size:14px;font-weight:600;">$\{item.n\}</div><div style="font-size:11px;color:#8e939b;">SAP: $\{item.id\}</div></div>\
-                <div class="qty-ctrl">\
-                    <button class="qty-btn" onclick="updateQty('$\{item.id\}','$\{item.n\}',-1)">\uc0\u8722 </button>\
-                    <div style="min-width:20px; text-align:center; font-weight:700;">$\{cart[k]?.q || 0\}</div>\
-                    <button class="qty-btn" onclick="updateQty('$\{item.id\}','$\{item.n\}',1)">+</button>\
-                </div>\
-            </div>`;\
-        \});\
-        cont.innerHTML += h + `</div>`;\
-    \}\
-\}\
-\
-function updateQty(id, n, d) \{\
-    const k = id + n;\
-    if(!cart[k]) cart[k] = \{id, n, q:0\};\
-    cart[k].q += d;\
-    if(cart[k].q <= 0) delete cart[k];\
-    render();\
-\}\
-\
-function showPage(id, btn) \{\
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));\
-    document.getElementById(id).classList.add('active');\
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));\
-    btn.classList.add('active');\
-    document.getElementById('copyBtn').innerText = (id === 'picker') ? "Copy Materials" : "Copy Full Report";\
-\}\
-\
-function doCopy() \{\
-    const getV = (id) => document.getElementById(id).value || "---";\
-    const mats = Object.values(cart).map(i => `$\{i.id.padEnd(8)\} | $\{i.n.padEnd(20)\} | QTY: $\{i.q\}`).join('\\n');\
-\
-    if(document.getElementById('picker').classList.contains('active')) \{\
-        copyToClipboard(mats || "No materials selected");\
-        return;\
-    \}\
-\
-    let r = `Technician(s):\\n--------------------------\\n`;\
-    r += `Inside: $\{getV('bf_in')\}\\nOutside: $\{getV('bf_out')\}\\n\\n`;\
-\
-    r += `Tests Completed:\\n--------------------------\\n`;\
-    r += `Ruby \uc0\u55357 \u57000 : $\{toggles['tg_ruby']\}\\n`;\
-    r += `Light \uc0\u55357 \u56481 : @ 1577nm: Suite: $\{getV('bf_l_suite')\} dBm Panel: $\{getV('bf_l_panel')\} dBm\\n`;\
-    r += `EXFO \uc0\u55357 \u56563 : $\{getV('bf_exfo_d')\} D / $\{getV('bf_exfo_u')\} U\\n`;\
-    r += `WiFi Speed \uc0\u55357 \u56566 : $\{getV('bf_wifi_d')\} D / $\{getV('bf_wifi_u')\} U\\n`;\
-    r += `Fluke: $\{toggles['tg_fluke']\}\\n\\n`;\
-\
-    r += `Installation Details:\\n--------------------------\\n`;\
-    r += `$\{toggles['tg_pri_type']\} Location: $\{getV('bf_z_loc')\}\\n`;\
-    r += `$\{toggles['tg_pri_type']\} MAC: $\{getV('bf_z_mac')\}\\n`;\
-    r += `$\{toggles['tg_pri_type']\} Model: $\{getV('bf_z_mod')\}\\n`;\
-    r += `$\{toggles['tg_sec_type']\} Location: $\{getV('bf_r_loc')\}\\n`;\
-    r += `$\{toggles['tg_sec_type']\} MAC: $\{getV('bf_r_mac')\}\\n`;\
-    r += `$\{toggles['tg_sec_type']\} Model: $\{getV('bf_r_mod')\}\\n\\n`;\
-\
-    r += `Cat5 Termination:\\n--------------------------\\n`;\
-    r += `Lines Terminated: $\{getV('bf_c5_term')\}\\n`;\
-    r += `Fluked: $\{getV('bf_c5_fluke')\}\\n`;\
-    r += `Plugged into the $\{toggles['tg_pri_type']\}: $\{getV('bf_c5_plug')\}\\n`;\
-    r += `Location(s):\\n$\{locTags.map(t => "  " + t).join('\\n')\}\\n`;\
-    r += `Was Customer Notified of $100 Charge? $\{toggles['tg_charge']\}\\n\\n`;\
-\
-    r += `Riser Info:\\n--------------------------\\n`;\
-    r += `Floor: $\{getV('bf_floor')\}\\nPanel: $\{getV('bf_fpp')\}\\n\\n`;\
-\
-    r += `Fiber Meter Mark:\\n--------------------------\\n`;\
-    r += `Pre Wired: $\{toggles['tg_prewired']\}\\n`;\
-    r += `Riser = $\{getV('bf_m_riser')\}m\\nSuite = $\{getV('bf_m_suite')\}m\\nTotal = $\{getV('bf_m_total')\}\\n\\n`;\
-\
-    r += `Hub Stock Location:\\n--------------------------\\n`;\
-    r += `Location: $\{getV('bf_hub')\}\\n\\n`;\
-\
-    r += `Additional Notes:\\n--------------------------\\n`;\
-    r += `Arrival: $\{getV('bf_time_a')\} | Departure: $\{getV('bf_time_d')\}\\n`;\
-    r += `$\{getV('bf_notes')\}\\n\\n`;\
-    r += `Parking:\\n--------------------------\\n`;\
-    r += `$\{getV('bf_parking')\}\\n\\n`;\
-\
-    r += `Material List:\\n--------------------------\\n$\{mats\}`;\
-\
-    copyToClipboard(r);\
-\}\
-\
-function copyToClipboard(t) \{\
-    const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);\
-    alert("Report Copied to Clipboard!");\
-\}\
-\
-window.onload = render;\
-function filterMats() \{\
-    let v = document.getElementById('matSearch').value.toLowerCase();\
-    document.querySelectorAll('.item-card').forEach(c => c.style.display = c.innerText.toLowerCase().includes(v) ? "flex" : "none");\
-\}\
-</script>\
-</body>\
-</html>}
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="showPage('picker', this)">Materials</button>
+    <button class="tab-btn" onclick="showPage('beanfield', this)">Full Report</button>
+</div>
+
+<div id="picker" class="page active">
+    <input type="text" id="matSearch" placeholder="🔍 Search SAP or Name..." onkeyup="filterMats()" style="margin-bottom:12px;">
+    <div id="mat-container"></div>
+</div>
+
+<div id="beanfield" class="page">
+    <div class="card">
+        <h3>Technician(s)</h3>
+        <div class="card-body grid">
+            <div><label>Inside</label><input type="text" id="bf_in" onchange="saveP()"></div>
+            <div><label>Outside</label><input type="text" id="bf_out"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Tests Completed</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Ruby 🚨</label><div class="toggle-group" id="tg_ruby"><div class="toggle-btn active" onclick="setT('tg_ruby','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_ruby','No')">No</div></div></div>
+                <div><label>Fluke</label><div class="toggle-group" id="tg_fluke"><div class="toggle-btn active" onclick="setT('tg_fluke','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_fluke','No')">No</div></div></div>
+            </div>
+            <label>Light 💡 (@1577nm)</label>
+            <div class="grid">
+                <input type="text" id="bf_l_suite" placeholder="Suite dBm">
+                <input type="text" id="bf_l_panel" placeholder="Panel dBm">
+            </div>
+            <label>EXFO 📲 (D / U)</label>
+            <div class="grid"><input type="text" id="bf_exfo_d" placeholder="Down"><input type="text" id="bf_exfo_u" placeholder="Up"></div>
+            <label>WiFi Speed 📶 (D / U)</label>
+            <div class="grid"><input type="text" id="bf_wifi_d" placeholder="Down"><input type="text" id="bf_wifi_u" placeholder="Up"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Installation Details</h3>
+        <div class="card-body">
+            <div class="toggle-group" id="tg_pri_type" style="margin-bottom:10px;">
+                <div class="toggle-btn active" onclick="setPri('Zhone')">Zhone</div><div class="toggle-btn" onclick="setPri('ONT')">ONT</div>
+            </div>
+            <input type="text" id="bf_z_loc" placeholder="Location (e.g. Smart Panel)" style="margin-bottom:5px;">
+            <input type="text" id="bf_z_mac" placeholder="MAC Address" style="margin-bottom:5px;">
+            <input type="text" id="bf_z_mod" placeholder="Model (e.g. 5222XG)">
+            <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+            <div class="toggle-group" id="tg_sec_type" style="margin-bottom:10px;">
+                <div class="toggle-btn active" onclick="setSec('Airties')">Airties</div><div class="toggle-btn" onclick="setSec('Beacon')">Beacon</div>
+            </div>
+            <input type="text" id="bf_r_loc" placeholder="Location (e.g. Living Room)" style="margin-bottom:5px;">
+            <input type="text" id="bf_r_mac" placeholder="MAC Address" style="margin-bottom:5px;">
+            <input type="text" id="bf_r_mod" value="4960x">
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Cat5 Termination</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Terminated</label><input type="text" id="bf_c5_term" placeholder="1/4"></div>
+                <div><label>Fluked</label><input type="text" id="bf_c5_fluke" placeholder="1/4"></div>
+            </div>
+            <div class="field"><label>Plugged into Zhone/ONT</label><input type="text" id="bf_c5_plug" placeholder="1/4"></div>
+            <label>Room Locations</label>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <input type="text" id="rm_n" placeholder="Room" style="flex:2"><input type="text" id="rm_p" placeholder="Port" style="flex:1">
+                <button onclick="addRm()" style="background:var(--primary); color:#fff; border:none; border-radius:8px; width:40px;">+</button>
+            </div>
+            <div id="rm_tags" style="margin-bottom:10px;"></div>
+            <label>$100 Charge Notified?</label>
+            <div class="toggle-group" id="tg_charge"><div class="toggle-btn active" onclick="setT('tg_charge','No')">No</div><div class="toggle-btn" onclick="setT('tg_charge','Yes')">Yes</div></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Riser & Fiber Mark</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Floor</label><input type="text" id="bf_floor" placeholder="09"></div>
+                <div><label>Panel / Port</label><input type="text" id="bf_fpp" placeholder="03 / 06"></div>
+            </div>
+            <label>Pre Wired?</label>
+            <div class="toggle-group" id="tg_prewired" style="margin-bottom:10px;"><div class="toggle-btn" onclick="setT('tg_prewired','Yes')">Yes</div><div class="toggle-btn active" onclick="setT('tg_prewired','No')">No</div></div>
+            <div class="grid">
+                <div><label>Riser (m)</label><input type="number" id="bf_m_riser" oninput="calc()"></div>
+                <div><label>Suite (m)</label><input type="number" id="bf_m_suite" oninput="calc()"></div>
+            </div>
+            <label>Total Distance</label>
+            <input type="text" id="bf_m_total" readonly style="background:#e8f5e9; font-weight:bold; color:var(--primary);">
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Additional Notes & Hub</h3>
+        <div class="card-body">
+            <label>Hub Stock Location</label>
+            <input type="text" id="bf_hub" value="2206 Eglinton Avenue East" style="margin-bottom:10px;">
+            <label>Additional Notes</label>
+            <textarea id="bf_notes" rows="4" placeholder="Hurdles, Fish tape details..."></textarea>
+            <label style="margin-top:10px;">Parking</label>
+            <textarea id="bf_parking" rows="2" placeholder="Underground visitor, etc."></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="footer"><button id="copyBtn" class="copy-main" onclick="doCopy()">Copy Materials</button></div>
+
+<script>
+const inventory = {
+    "Copper": [{id:"1000289", n:"RJ45 Connector"}, {id:"1001047", n:"2 Port Faceplate"}, {id:"1000520", n:"White Jacks"}],
+    "Fiber": [{id:"1001083", n:"LC APC Connector"}, {id:"1000526", n:"Heat Sleeve"}, {id:"1002388", n:"APC APC Patches"}, {id:"1002322", n:"Fiber Jack"}],
+    "Hardware": [{id:"1002324", n:"5222XG Zhone"}, {id:"1002555", n:"Nokia Beacon 19"}, {id:"1002327", n:"2424GN Zhone"}],
+    "Other": [{id:"1002445", n:"XGS / 2424GN Zhone Mount"}, {id:"-", n:"Booties"}]
+};
+
+let cart = {};
+let toggles = { 'tg_ruby': 'Yes', 'tg_fluke': 'Yes', 'tg_pri_type': 'Zhone', 'tg_sec_type': 'Airties', 'tg_charge': 'No', 'tg_prewired': 'No' };
+let rooms = [];
+
+function saveP() { localStorage.setItem('bf_tech', document.getElementById('bf_in').value); }
+function loadP() { if(localStorage.getItem('bf_tech')) document.getElementById('bf_in').value = localStorage.getItem('bf_tech'); }
+
+function setT(gid, v) {
+    toggles[gid] = v;
+    document.getElementById(gid).querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.innerText === v));
+}
+
+function setPri(t) { setT('tg_pri_type', t); document.getElementById('bf_z_mod').value = (t === 'ONT') ? "XS-010x" : ""; }
+function setSec(t) { setT('tg_sec_type', t); document.getElementById('bf_r_mod').value = (t === 'Beacon') ? "Nokia Beacon 19" : "4960x"; }
+
+function addRm() {
+    const n = document.getElementById('rm_n').value;
+    const p = document.getElementById('rm_p').value || '01';
+    if(n) { rooms.push(`${n} 🛋️: ${p}`); document.getElementById('rm_n').value=''; renderRm(); }
+}
+function renderRm() {
+    document.getElementById('rm_tags').innerHTML = rooms.map((r,i) => `<div class="tag">${r} <span onclick="rooms.splice(${i},1);renderRm()">×</span></div>`).join('');
+}
+
+function calc() {
+    const r = parseFloat(document.getElementById('bf_m_riser').value) || 0;
+    const s = parseFloat(document.getElementById('bf_m_suite').value) || 0;
+    document.getElementById('bf_m_total').value = Math.abs(s - r) + "m";
+}
+
+function render() {
+    const cont = document.getElementById('mat-container');
+    cont.innerHTML = "";
+    for(let cat in inventory) {
+        let h = `<div class="card"><h3>${cat}</h3><div class="card-body">`;
+        inventory[cat].forEach(item => {
+            const k = item.id + item.n;
+            h += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div><div style="font-size:14px; font-weight:600;">${item.n}</div><div style="font-size:11px; color:#999;">SAP: ${item.id}</div></div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <button onclick="updateQty('${item.id}','${item.n}',-1)" style="width:30px;height:30px;border-radius:50%;border:1px solid #ccc;">-</button>
+                    <span style="min-width:15px;text-align:center;font-weight:bold;">${cart[k]?.q || 0}</span>
+                    <button onclick="updateQty('${item.id}','${item.n}',1)" style="width:30px;height:30px;border-radius:50%;border:1px solid #ccc;">+</button>
+                </div>
+            </div>`;
+        });
+        cont.innerHTML += h + `</div></div>`;
+    }
+}
+
+function updateQty(id, n, d) {
+    const k = id + n;
+    if(!cart[k]) cart[k] = {id, n, q:0};
+    cart[k].q += d;
+    if(cart[k].q <= 0) delete cart[k];
+    render();
+}
+
+function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('copyBtn').innerText = (id === 'picker') ? "Copy Materials" : "Copy Full Report";
+}
+
+function doCopy() {
+    const getV = (id) => document.getElementById(id).value || "---";
+    
+    // 生成物料列表 (对应图片2)
+    const matText = Object.keys(inventory).map(cat => {
+        const items = inventory[cat].filter(item => cart[item.id + item.n]);
+        if (items.length === 0) return "";
+        let catStr = `\n${cat}\nSAP | Materials | QTY\n`;
+        items.forEach(i => {
+            const q = cart[i.id + i.n].q;
+            catStr += `${i.id.padEnd(8)} | ${i.n.padEnd(18)} | ${q.toString().padStart(2, '0')}\n`;
+        });
+        return catStr;
+    }).join('');
+
+    if(document.getElementById('picker').classList.contains('active')) {
+        copyToClipboard("Material List:" + (matText || "\nNo items selected"));
+        return;
+    }
+
+    // 生成完整报告 (对应图片1布局)
+    let r = `Technician(s):\n--------------------------\n`;
+    r += `Inside: ${getV('bf_in')}\nOutside: ${getV('bf_out')}\n\n`;
+
+    r += `Tests Completed:\n--------------------------\n`;
+    r += `Ruby 🚨: ${toggles['tg_ruby']}\n`;
+    r += `Light 💡: @ 1577nm: Suite: ${getV('bf_l_suite')} dBm Panel: ${getV('bf_l_panel')} dBm\n`;
+    r += `EXFO 📲: ${getV('bf_exfo_d')} D / ${getV('bf_exfo_u')} U\n`;
+    r += `Wifi Speed 📶: ${getV('bf_wifi_d')} D / ${getV('bf_wifi_u')} U\n`;
+    r += `Fluke: ${toggles['tg_fluke']}\n\n`;
+
+    r += `Installation Details:\n--------------------------\n`;
+    r += `${toggles['tg_pri_type']} Location: ${getV('bf_z_loc')}\n`;
+    r += `${toggles['tg_pri_type']} MAC: ${getV('bf_z_mac')}\n`;
+    r += `${toggles['tg_pri_type']} Model: ${getV('bf_z_mod')}\n`;
+    r += `${toggles['tg_sec_type']} Location: ${getV('bf_r_loc')}\n`;
+    r += `${toggles['tg_sec_type']} MAC: ${getV('bf_r_mac')}\n`;
+    r += `${toggles['tg_sec_type']} Model: ${getV('bf_r_mod')}\n\n`;
+
+    r += `Cat5 Termination:\n--------------------------\n`;
+    r += `Lines Terminated: ${getV('bf_c5_term')}\n`;
+    r += `Fluked: ${getV('bf_c5_fluke')}\n`;
+    r += `Plugged into the ${toggles['tg_pri_type']}: ${getV('bf_c5_plug')}\n`;
+    r += `Location(s):\n${rooms.map(rm => rm).join('\n')}\n`;
+    r += `Was the Customer Notified of $100 Charge for a Return Visit?\n${toggles['tg_charge']}\n\n`;
+
+    r += `Riser Info:\n--------------------------\n`;
+    r += `Floor: ${getV('bf_floor')}\nPanel: ${getV('bf_fpp')}\n\n`;
+
+    r += `Fiber Meter Mark:\n--------------------------\n`;
+    r += `Pre Wired: ${toggles['tg_prewired']}\n`;
+    r += `Riser = ${getV('bf_m_riser')}m\nSuite = ${getV('bf_m_suite')}m\nTotal = ${getV('bf_m_total')}\n\n`;
+
+    r += `Hub Stock Location:\n--------------------------\n`;
+    r += `Location: ${getV('bf_hub')}\n\n`;
+
+    r += `Material List:\n--------------------------${matText || "\nNone"}\n\n`;
+
+    r += `Additional Notes:\n--------------------------\n${getV('bf_notes')}\n\n`;
+    r += `Parking:\n--------------------------\n- ${getV('bf_parking')}`;
+
+    copyToClipboard(r);
+}
+
+function copyToClipboard(t) {
+    const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    alert("Report Copied!");
+}
+
+window.onload = () => { render(); loadP(); };
+function filterMats() {
+    let v = document.getElementById('matSearch').value.toLowerCase();
+    document.querySelectorAll('.card').forEach(c => {
+        if(c.parentNode.id === 'mat-container') {
+            c.style.display = c.innerText.toLowerCase().includes(v) ? "block" : "none";
+        }
+    });
+}
+</script>
+</body>
+</html>
