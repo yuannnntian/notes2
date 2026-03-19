@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox v18.9</title>
+    <title>Beanfield Toolbox v20.0</title>
     <style>
-        :root { --primary: #2d8a45; --bg: #f2f7f2; --card: #ffffff; --header: #77b788; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1c1c1e; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #2d8a45; --bg: #f2f7f2; --card: #ffffff; --header: #93cc94; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1c1c1e; }
         .nav-tabs { position: sticky; top: 0; display: flex; background: #fff; padding: 10px; gap: 8px; z-index: 2000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .tab-btn { flex: 1; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 700; background: #e8eee8; color: #777; }
         .tab-btn.active { background: var(--primary); color: white; }
@@ -17,126 +17,196 @@
         .card-body { padding: 15px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         label { display: block; font-size: 11px; font-weight: 700; color: #555; margin-bottom: 4px; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ced4ce; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fafafa; outline: none; }
-        .toggle-group { display: flex; gap: 5px; }
-        .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ced4ce; background: #fff; font-size: 13px; font-weight: 600; color: #666; text-align: center; }
+        input { width: 100%; padding: 12px; border: 1px solid #ced4ce; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fafafa; }
+        .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ced4ce; background: #fff; font-size: 13px; font-weight: 600; text-align: center; }
         .toggle-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .footer { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #ccc; padding: 15px; box-sizing: border-box; }
-        .copy-main { width: 100%; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 17px; color: white; background: var(--primary); box-shadow: 0 4px 12px rgba(45,138,69,0.3); }
+        .footer { position: fixed; bottom: 0; width: 100%; background: #fff; border-top: 1px solid #ccc; padding: 15px; box-sizing: border-box; }
+        .copy-main { width: 100%; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 17px; color: white; background: var(--primary); }
         .tag { display: inline-flex; align-items: center; background: #e8f5e9; color: var(--primary); padding: 6px 12px; border-radius: 6px; margin: 4px; font-size: 14px; border: 1px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showPage('picker', this)">Materials List</button>
-    <button class="tab-btn" onclick="showPage('beanfield', this)">Report Detail</button>
+    <button class="tab-btn active" onclick="showPage('picker', this)">Materials</button>
+    <button class="tab-btn" onclick="showPage('beanfield', this)">Report</button>
 </div>
 
 <div id="picker" class="page active">
-    <input type="text" id="matSearch" placeholder="🔍 Search SAP or Name..." onkeyup="filterMats()" style="margin-bottom:12px;">
     <div id="mat-container"></div>
 </div>
 
 <div id="beanfield" class="page">
     <div class="card">
-        <h3>Technician(s):</h3>
+        <h3>Technician(s)</h3>
         <div class="card-body grid">
-            <div><label>Inside</label><input type="text" id="bf_in" onchange="saveP()"></div>
+            <div><label>Inside</label><input type="text" id="bf_in"></div>
             <div><label>Outside</label><input type="text" id="bf_out"></div>
         </div>
     </div>
 
     <div class="card">
-        <h3>Tests Completed:</h3>
+        <h3>Tests & Light</h3>
         <div class="card-body">
             <div class="grid">
-                <div><label>Ruby 🚨</label><div class="toggle-group" id="tg_ruby"><div class="toggle-btn active" onclick="setT('tg_ruby','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_ruby','No')">No</div></div></div>
-                <div><label>Fluke</label><div class="toggle-group" id="tg_fluke"><div class="toggle-btn active" onclick="setT('tg_fluke','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_fluke','No')">No</div></div></div>
+                <div><label>Ruby 🚨</label><div class="toggle-group" id="tg_ruby" style="display:flex;gap:5px"><div class="toggle-btn active" onclick="setT('tg_ruby','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_ruby','No')">No</div></div></div>
+                <div><label>Light (dBm)</label><input type="text" id="bf_light" placeholder="-20.23"></div>
             </div>
-            <label>Light 💡: @ 1577nm:</label>
             <div class="grid">
-                <input type="text" id="bf_l_suite" placeholder="Suite dBm">
-                <input type="text" id="bf_l_panel" placeholder="Panel dBm">
+                <div><label>EXFO</label><div class="toggle-group" id="tg_exfo" style="display:flex;gap:5px"><div class="toggle-btn active" onclick="setT('tg_exfo','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_exfo','No')">No</div></div></div>
+                <div><label>Pair Test</label><div class="toggle-group" id="tg_pair" style="display:flex;gap:5px"><div class="toggle-btn active" onclick="setT('tg_pair','Yes')">Yes</div><div class="toggle-btn" onclick="setT('tg_pair','No')">No</div></div></div>
             </div>
-            <label>EXFO 📲:</label>
-            <div class="grid"><input type="text" id="bf_exfo_d" placeholder="Down speed"><input type="text" id="bf_exfo_u" placeholder="Up speed"></div>
-            <label>Wifi Speed 📶:</label>
-            <div class="grid"><input type="text" id="bf_wifi_d" placeholder="Down speed"><input type="text" id="bf_wifi_u" placeholder="Up speed"></div>
         </div>
     </div>
 
     <div class="card">
-        <h3>Installation Details:</h3>
+        <h3>Hardware (ONT/AP)</h3>
         <div class="card-body">
-            <div class="toggle-group" id="tg_pri_type" style="margin-bottom:10px;">
-                <div class="toggle-btn active" onclick="setPri('Zhone')">Zhone</div><div class="toggle-btn" onclick="setPri('ONT')">ONT</div>
-            </div>
-            <input type="text" id="bf_z_loc" placeholder="Location" style="margin-bottom:5px;">
-            <input type="text" id="bf_z_mac" placeholder="MAC Address" style="margin-bottom:5px;">
-            <input type="text" id="bf_z_mod" placeholder="Model">
-            <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
-            <div class="toggle-group" id="tg_sec_type" style="margin-bottom:10px;">
-                <div class="toggle-btn active" onclick="setSec('Airties')">Airties</div><div class="toggle-btn" onclick="setSec('Beacon')">Beacon</div>
-            </div>
-            <input type="text" id="bf_r_loc" placeholder="Location" style="margin-bottom:5px;">
-            <input type="text" id="bf_r_mac" placeholder="MAC Address" style="margin-bottom:5px;">
-            <input type="text" id="bf_r_mod" value="4960x">
+            <label>ONT Location & MAC</label>
+            <div class="grid"><input type="text" id="ont_loc" placeholder="Smart Panel"><input type="text" id="ont_mac" placeholder="MAC/SN"></div>
+            <label>ONT Model</label><input type="text" id="ont_mod" value="Nokia - 10x-R">
+            <hr>
+            <label>AP Location & MAC</label>
+            <div class="grid"><input type="text" id="ap_loc" placeholder="Smart Panel"><input type="text" id="ap_mac" placeholder="MAC Address"></div>
+            <label>AP Model</label><input type="text" id="ap_mod" value="Nokia - Beacon">
         </div>
     </div>
 
     <div class="card">
-        <h3>Cat5 Termination:</h3>
+        <h3>Cat5 Termination</h3>
         <div class="card-body">
             <div class="grid">
-                <div><label>Lines Terminated</label><input type="text" id="bf_c5_term"></div>
-                <div><label>Fluked</label><input type="text" id="bf_c5_fluke"></div>
+                <div><label>Terminated</label><input type="text" id="c5_t" placeholder="2/6"></div>
+                <div><label>Pair Tested</label><input type="text" id="c5_p" placeholder="2/6"></div>
             </div>
-            <div class="field"><label>Plugged into Zhone/ONT</label><input type="text" id="bf_c5_plug"></div>
-            <label>Location(s):</label>
-            <div style="display:flex; gap:5px; margin-bottom:10px;">
-                <input type="text" id="rm_n" placeholder="Room Name" style="flex:2"><input type="text" id="rm_p" placeholder="Port" style="flex:1">
-                <button onclick="addRm()" style="background:var(--primary); color:#fff; border:none; border-radius:8px; width:40px;">+</button>
-            </div>
-            <div id="rm_tags" style="margin-bottom:10px;"></div>
-            <label>Customer Notified of $100 Charge?</label>
-            <div class="toggle-group" id="tg_charge"><div class="toggle-btn active" onclick="setT('tg_charge','No')">No</div><div class="toggle-btn" onclick="setT('tg_charge','Yes')">Yes</div></div>
+            <label>Room Locations (Example: Living Room🛋️:01)</label>
+            <input type="text" id="rm_input" placeholder="Room🛋️:Port">
+            <button onclick="addRm()" style="width:100%;margin-top:5px;padding:8px">Add Room</button>
+            <div id="rm_tags" style="margin-top:10px"></div>
         </div>
     </div>
 
     <div class="card">
-        <h3>Riser Info:</h3>
+        <h3>Riser Info</h3>
         <div class="card-body grid">
             <div><label>Floor</label><input type="text" id="bf_floor"></div>
-            <div><label>Panel / Port</label><input type="text" id="bf_fpp"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>Fiber Meter Mark:</h3>
-        <div class="card-body">
-            <label>Pre Wired</label>
-            <div class="toggle-group" id="tg_prewired" style="margin-bottom:10px;"><div class="toggle-btn" onclick="setT('tg_prewired','Yes')">Yes</div><div class="toggle-btn active" onclick="setT('tg_prewired','No')">No</div></div>
-            <div class="grid">
-                <div><label>Riser (m)</label><input type="number" id="bf_m_riser" oninput="calc()"></div>
-                <div><label>Suite (m)</label><input type="number" id="bf_m_suite" oninput="calc()"></div>
-            </div>
-            <label>Total</label>
-            <input type="text" id="bf_m_total" readonly style="background:#e8f5e9; font-weight:bold;">
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>Additional Info:</h3>
-        <div class="card-body">
-            <label>Hub Stock Location</label>
-            <input type="text" id="bf_hub" value="2206 Eglinton Avenue East" style="margin-bottom:10px;">
-            <label>Notes</label>
-            <textarea id="bf_notes" rows="3"></textarea>
-            <label style="margin-top:10px;">Parking</label>
-            <textarea id="bf_parking" rows="2"></textarea>
+            <div><label>Panel/Port</label><input type="text" id="bf_fpp"></div>
         </div>
     </div>
 </div>
 
-<div class="footer"><button id="copyBtn" class="
+<div class="footer"><button id="copyBtn" class="copy-main" onclick="doCopy()">Copy Jira Report</button></div>
+
+<script>
+const inventory = {
+    "Copper": [
+        {id:"1000289", n:"RJ45 Connector"}, {id:"1000520", n:"White Jacks"}, {id:"1001047", n:"2 Port Faceplate"}
+    ],
+    "Fibre": [
+        {id:"1001083", n:"LC APC Connector"}, {id:"1000526", n:"Heat Sleeve"}, {id:"1002322", n:"Fibre Jack"}, {id:"1002388", n:"APC APC Patches"}
+    ],
+    "Hardware": [
+        {id:"1002557", n:"Nokia XS-010X-R"}, {id:"1002555", n:"Nokia Beacon 19"}
+    ],
+    "Other": [
+        {id:"1002445", n:"XGS / 2424GN Zhone Mount"}, {id:"1002573", n:"Nokia ONT Mount - Factory"}
+    ]
+};
+
+let cart = {};
+let toggles = { 'tg_ruby': 'Yes', 'tg_exfo': 'Yes', 'tg_pair': 'Yes' };
+let rooms = [];
+
+function setT(gid, v) {
+    toggles[gid] = v;
+    document.getElementById(gid).querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.innerText === v));
+}
+
+function addRm() {
+    const val = document.getElementById('rm_input').value;
+    if(val) { rooms.push(val); document.getElementById('rm_input').value=''; renderRm(); }
+}
+function renderRm() {
+    document.getElementById('rm_tags').innerHTML = rooms.map((r,i) => `<div class="tag">${r} <span onclick="rooms.splice(${i},1);renderRm()">×</span></div>`).join('');
+}
+
+function render() {
+    const cont = document.getElementById('mat-container');
+    cont.innerHTML = "";
+    for(let cat in inventory) {
+        let h = `<div class="card"><h3>${cat}</h3><div class="card-body">`;
+        inventory[cat].forEach(item => {
+            const k = item.id;
+            h += `<div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                <span>${item.n}</span>
+                <div>
+                    <button onclick="updateQty('${item.id}','${item.n}',-1)">-</button>
+                    <span style="margin:0 10px">${cart[k]?.q || 0}</span>
+                    <button onclick="updateQty('${item.id}','${item.n}',1)">+</button>
+                </div>
+            </div>`;
+        });
+        cont.innerHTML += h + `</div></div>`;
+    }
+}
+
+function updateQty(id, n, d) {
+    if(!cart[id]) cart[id] = {n, q:0};
+    cart[id].q += d;
+    if(cart[id].q <= 0) delete cart[id];
+    render();
+}
+
+function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function doCopy() {
+    const getV = (id) => document.getElementById(id).value || "";
+    const panel = (title, content) => `{panel:title=${title}:|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}${content}{panel}`;
+
+    let out = "";
+    
+    // 1. Techs
+    out += panel("Technician(s):", `Inside:${getV('bf_in')}Outside:${getV('bf_out')}`);
+    
+    // 2. Tests
+    const rubyColor = toggles['tg_ruby'] === 'Yes' ? "{color:#ED1C24}Yes{color}" : "No";
+    out += panel("Tests Completed:", `Ruby 🚨:${rubyColor}Light 💡:@ 1577nm:${getV('bf_light')}EXFO 📲:${toggles['tg_exfo']}Pair Test:${toggles['tg_pair']}`);
+    
+    // 3. Installation
+    out += panel("Installation Details:", `*ONT Location*:${getV('ont_loc')}\n${getV('ont_mac')}\n*ONT MAC/SN*::::::\nONT Model:${getV('ont_mod')}\n*AP Location*:${getV('ap_loc')}\n${getV('ap_mac')}\n*AP MAC*::::::\nAP Model:${getV('ap_mod')}`);
+    
+    // 4. Cat5
+    let rmStr = rooms.map(r => r).join('\n');
+    out += panel("Cat5 Termination:", `Lines Terminated:${getV('c5_t')}Pair Tested:${getV('c5_p')}_Location(s):_\n${rmStr}\n_Was the Customer Notified of $100 Charge for a Return Visit ?_No`);
+
+    // 5. Riser
+    out += panel("Riser Info:", `Floor:${getV('bf_floor')}Panel:${getV('bf_fpp')}`);
+
+    // 6. Hub
+    out += panel("Hub Stock Location:", `Location:[2206 Eglinton Avenue East|https://maps.app.goo.gl/ajmWYUAxmWts4sun6]`);
+
+    // 7. Materials (竖线表格格式)
+    let matOut = "";
+    for(let cat in inventory) {
+        matOut += `h5. _${cat}_\n||_SAP_||_Materials_||_QTY_||\n`;
+        inventory[cat].forEach(i => {
+            if(cart[i.id]) {
+                matOut += `|${i.id}|{{${i.n}}}|${cart[i.id].q.toString().padStart(2,'0')}|\n`;
+            }
+        });
+    }
+    out += panel("Material List:", matOut);
+
+    const el = document.createElement('textarea'); el.value = out; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    alert("Wiki Markup Copied!");
+}
+
+window.onload = render;
+</script>
+</body>
+</html>
