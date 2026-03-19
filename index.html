@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox v22.0</title>
+    <title>Beanfield Toolbox v23.0</title>
     <style>
         :root { --primary: #2d8a45; --bg: #f2f7f2; --card: #ffffff; --header: #93cc94; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1c1c1e; -webkit-tap-highlight-color: transparent; }
@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="grid" style="margin-bottom:10px;">
-                <div><label>Ruby (riser)</label><input type="text" id="bf_ruby" placeholder="e.g. -20.5"></div>
+                <div><label>Ruby (riser)</label><input type="text" id="bf_ruby" placeholder="dBm"></div>
                 <div><label>Exfo</label><input type="text" id="bf_exfo" value="Yes"></div>
             </div>
             <div class="grid">
@@ -108,7 +108,7 @@
             <div id="bf_tags" style="margin-bottom:15px;"></div>
             
             <div class="field">
-                <label id="lbl_closet_advisory">Airties in closet advisory?</label>
+                <label id="lbl_closet_advisory">Closet advisory?</label>
                 <div class="toggle-group" id="bf_closet">
                     <div class="toggle-btn" onclick="setToggle('bf_closet', 'Yes')">Yes</div>
                     <div class="toggle-btn" onclick="setToggle('bf_closet', 'No')">No</div>
@@ -142,16 +142,15 @@
             <div class="field" style="margin-top:10px;"><label>Hub Stock Location</label><input type="text" id="bf_hub" value="2206 Eglinton Ave east"></div>
         </div>
     </div>
-
-    <div class="card"><h3>Notes</h3><div class="card-body"><textarea id="bf_notes" rows="2"></textarea></div></div>
 </div>
 
 <div class="footer"><button id="copyBtn" class="copy-main" onclick="doCopy()">Copy Jira Report</button></div>
 
 <script>
-// 全量还原 v17.0 的 inventory
+// 已加入新增的 1002335 和 1002589
 const inventory = {
     "Frequently Used": [
+        {id:"1002335", n:"1m LC APC/APC Patches"}, {id:"1002589", n:"Nokia ONT Mount - Custom"},
         {id:"1001199", n:"4 port GPON zhone"}, {id:"1002327", n:"NEW ZHONE 2424GN"}, {id:"1002324", n:"XGS Zhone"},
         {id:"1002557", n:"Nokia XS-010x ONT"}, {id:"1002573", n:"Nokia ONT Mount"},
         {id:"1002245", n:"GN/XGS Zhone mounts"}, {id:"1000420", n:"Zhone mounts"}, 
@@ -199,7 +198,6 @@ function setRouterType(type) {
     document.getElementById('lbl_router_loc').innerText = type + " Location";
     document.getElementById('lbl_router_mac').innerText = type + "-MAC";
     document.getElementById('lbl_router_mod').innerText = type + " Model";
-    document.getElementById('lbl_closet_advisory').innerText = type + " in closet advisory?";
     document.getElementById('bf_r_mod').value = (type === 'Beacon') ? "Beacon19" : "4960x";
 }
 
@@ -235,7 +233,6 @@ function updateQty(id, n, d) {
     cart[k].q += d;
     if(cart[k].q <= 0) delete cart[k];
     
-    // 智能填充逻辑
     if (toggles['pri_type'] === 'Zhone' && d > 0) {
         const zMod = document.getElementById('bf_z_mod');
         if (id === "1001199") zMod.value = "2424A1";
@@ -270,7 +267,6 @@ function doCopy() {
     const getV = (id) => document.getElementById(id).value || "---";
     const panel = (title, content) => `{panel:title=${title}:|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}${content}{panel}`;
 
-    // 生成物料表格 (Jira 表格格式)
     let matMarkup = "";
     for(let cat in inventory) {
         let items = inventory[cat].filter(i => cart[i.id + i.n]);
@@ -287,7 +283,6 @@ function doCopy() {
         return;
     }
 
-    // 生成完整 Jira 报告
     const rubyColor = toggles['bf_tests_done'] === 'Yes' ? "{color:#ED1C24}Yes{color}" : "No";
     let pType = toggles['pri_type'], rType = toggles['router_type'];
 
@@ -300,7 +295,6 @@ function doCopy() {
     
     out += panel("Infrastructure:", `Floor/Panel/Port: ${getV('bf_fpp')}\nFiber Marks: Riser=${getV('bf_m_riser')}m, Suite=${getV('bf_m_suite')}m, Total=${getV('bf_m_total')}\nHub Stock: ${getV('bf_hub')}`);
     out += panel("Material List:", matMarkup || "No items selected");
-    out += panel("Additional Notes:", getV('bf_notes'));
 
     copyToClipboard(out);
 }
