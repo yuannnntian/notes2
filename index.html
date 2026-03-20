@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox - Pro Table Sync</title>
+    <title>Beanfield Toolbox - Perfect Table Sync</title>
     <style>
         :root { --primary: #2d8a45; --bg: #f4f7f4; --card: #ffffff; --header: #93cc94; --text: #333; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-tap-highlight-color: transparent; }
@@ -16,7 +16,7 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 物料列表 - 保持单行清晰 */
+        /* 物料列表 */
         .category-title { margin: 25px 0 10px 5px; font-size: 14px; font-weight: 800; color: #444; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #d0ddd0; padding-bottom: 5px; }
         .mat-list { display: flex; flex-direction: column; gap: 8px; }
         .item-row { display: flex; justify-content: space-between; align-items: center; background: white; padding: 14px 15px; border-radius: 12px; border: 1px solid #e0e6e0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
@@ -198,7 +198,7 @@
     <button class="btn-main" onclick="doCopy()">COPY FULL TABLES</button>
 </div>
 
-<div id="toast">✅ Copied to Jira Tables!</div>
+<div id="toast">✅ Copied to Jira Tables (No Macros)!</div>
 
 <script>
 const inventory = {
@@ -293,13 +293,13 @@ function render() {
     }
 }
 
-// 完美智能联动逻辑
 function updateQty(id, n, d) {
     const k = id + n;
     if(!cart[k]) cart[k] = {id, n, q:0};
     cart[k].q += d;
     if(cart[k].q <= 0) delete cart[k];
     
+    // 智能联动逻辑
     if(d > 0) {
         if (id === "1001199") document.getElementById('ont_mod').value = "2424A1";
         else if (id === "1002327") document.getElementById('ont_mod').value = "2424gn";
@@ -330,15 +330,14 @@ function doCopy() {
     const val = (id) => document.getElementById(id).value;
     const tgl = (id) => toggles[id];
     
-    // 强制防空值错位保护：如果没有填任何数字，就用一个纯空格代替
+    // 空格保护：如果没填，用一个空格代替，防止 Jira 表格因空值而塌陷/错位
     const cell = (v) => (v === "" || v === undefined) ? " " : v;
     
-    // Jira Panel 换行保护构造器
     const panel = (title, content) => `{panel:title=${title}|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}\n${content}\n{panel}\n`;
 
     let r = "";
     
-    // 所有模块全部升级为完美的 Jira | 边框表格格式
+    // 所有模块全部升级为 Jira | 边框表格格式
     r += panel("Technician(s):", `|Inside:|${cell(val('bf_in'))}|\n|Outside:|${cell(val('bf_out'))}|`);
     r += panel("Network:", `|Network:|${cell(val('bf_net'))}|`);
     
@@ -404,14 +403,14 @@ function doCopy() {
         if(items.length > 0) {
             matOut += `h5. _${cat}_\n||_SAP_||_Materials_||_QTY_||\n`;
             items.forEach(i => {
-                matOut += `|${i.id}|{{${i.n}}}|${cart[i.id + i.n].q.toString().padStart(2,'0')}|\n`;
+                // BUG FIX: Removed {{ }} around i.n to stop Jira "Unknown macro" errors
+                matOut += `|${i.id}|${i.n}|${cart[i.id + i.n].q.toString().padStart(2,'0')}|\n`;
             });
             hasItems = true;
         }
     }
     r += panel("Material List:", hasItems ? matOut.replace(/\n$/, "") : "None");
 
-    // 备注段落如果加表格会非常难看，所以保留纯文本
     let nts = val('notes') ? `${val('notes')}**` : "**";
     r += panel("Additional Notes:", nts);
 
@@ -421,10 +420,8 @@ function doCopy() {
 |Bulkheads Installed:|${cell(val('s_bulk'))}*|`;
     r += panel("Splitter Activation:", sAct);
 
-    // 复制到剪贴板
     const el = document.createElement('textarea'); el.value = r.trim(); document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
     
-    // 弹出成功提示
     const toast = document.getElementById("toast");
     toast.className = "show";
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
