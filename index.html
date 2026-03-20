@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox - Ultimate Sync</title>
+    <title>Beanfield Toolbox - Clean List</title>
     <style>
         :root { --primary: #2d8a45; --bg: #f4f7f4; --card: #ffffff; --header: #93cc94; --text: #333; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-tap-highlight-color: transparent; }
@@ -16,16 +16,17 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 物料网格 - 紧凑两列 */
+        /* 物料列表 - 一行一个模式 */
         .category-title { margin: 25px 0 10px 5px; font-size: 14px; font-weight: 800; color: #444; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #d0ddd0; padding-bottom: 5px; }
-        .mat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .mat-card { background: white; padding: 12px; border-radius: 12px; border: 1px solid #e0e6e0; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .mat-name { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; color: #222; min-height: 34px; }
-        .mat-sap { font-size: 11px; color: #888; margin-bottom: 10px; font-family: monospace; }
-        .qty-ctrl { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border-radius: 20px; padding: 2px 4px; }
-        .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; background: white; color: var(--primary); font-weight: bold; font-size: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; }
+        .mat-list { display: flex; flex-direction: column; gap: 8px; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; background: white; padding: 14px 15px; border-radius: 12px; border: 1px solid #e0e6e0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .mat-info { flex: 1; padding-right: 10px; }
+        .mat-name { font-size: 15px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; color: #222; }
+        .mat-sap { font-size: 12px; color: #888; font-family: monospace; }
+        .qty-ctrl { display: flex; align-items: center; gap: 12px; background: #f8f9fa; border-radius: 20px; padding: 4px 8px; }
+        .qty-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #ddd; background: white; color: var(--primary); font-weight: bold; font-size: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
         .qty-btn:active { transform: scale(0.95); }
-        .qty-val { font-weight: 800; font-size: 15px; color: var(--primary); min-width: 20px; text-align: center; }
+        .qty-val { font-weight: 800; font-size: 16px; color: var(--primary); min-width: 24px; text-align: center; }
 
         /* 表单样式 */
         .card { background: white; border-radius: 12px; margin-bottom: 15px; border: 1px solid #e0e6e0; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
@@ -200,7 +201,6 @@
 <div id="toast">✅ Copied in Google Sheet Format!</div>
 
 <script>
-// 你的物料结构
 const inventory = {
     "Frequently Used": [
         // Nokia
@@ -277,12 +277,12 @@ function render() {
     const cont = document.getElementById('mat-container');
     cont.innerHTML = "";
     for(let cat in inventory) {
-        let h = `<div class="category-title">${cat}</div><div class="mat-grid">`;
+        let h = `<div class="category-title">${cat}</div><div class="mat-list">`;
         inventory[cat].forEach(item => {
             const k = item.id + item.n;
             const q = cart[k]?.q || 0;
-            h += `<div class="mat-card">
-                <div>
+            h += `<div class="item-row">
+                <div class="mat-info">
                     <div class="mat-name">${item.n}</div>
                     <div class="mat-sap">SAP: ${item.id}</div>
                 </div>
@@ -303,7 +303,6 @@ function updateQty(id, n, d) {
     cart[k].q += d;
     if(cart[k].q <= 0) delete cart[k];
     
-    // 智能联动：选Zhone自动填Model
     if(d > 0) {
         if (id === "1001199") document.getElementById('ont_mod').value = "2424A1";
         else if (id === "1002327") document.getElementById('ont_mod').value = "2424gn";
@@ -314,7 +313,7 @@ function updateQty(id, n, d) {
 
 function filterMats() {
     let v = document.getElementById('matSearch').value.toLowerCase();
-    document.querySelectorAll('.mat-card').forEach(c => c.style.display = c.innerText.toLowerCase().includes(v) ? "flex" : "none");
+    document.querySelectorAll('.item-row').forEach(c => c.style.display = c.innerText.toLowerCase().includes(v) ? "flex" : "none");
 }
 
 function showPage(id, btn) {
@@ -328,14 +327,12 @@ function doCopy() {
     const val = (id) => document.getElementById(id).value;
     const tgl = (id) => toggles[id];
     
-    // Jira Panel 换行保护构造器
     const panel = (title, content) => `\n{panel:title=${title}|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}\n${content}\n{panel}\n`;
 
     let r = "";
     r += panel("Technician(s):", `Inside:${val('bf_in')}\nOutside:${val('bf_out')}`);
     r += panel("Network:", `${val('bf_net')}`);
     
-    // 删除了 C=light 和 D=light 这两行
     let tests = `Ruby 🚨:${tgl('tg_ruby')}\nLight 💡:@ 1577nm:\n-Suite: ${val('l_suite')} dBm\n-Panel: ${val('l_panel')} dBm\nEXFO 📲:${tgl('tg_exfo')}\nWifi 🛜:${tgl('tg_wifi')}\nPair Test:${tgl('tg_pair')}`;
     r += panel("Tests Completed:", tests);
 
