@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox - Ultimate Auto-fill</title>
+    <title>Beanfield Toolbox - Table Format Sync</title>
     <style>
         :root { --primary: #2d8a45; --bg: #f4f7f4; --card: #ffffff; --header: #93cc94; --text: #333; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-tap-highlight-color: transparent; }
@@ -16,7 +16,7 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 物料列表 - 一行一个模式 */
+        /* 物料列表 */
         .category-title { margin: 25px 0 10px 5px; font-size: 14px; font-weight: 800; color: #444; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #d0ddd0; padding-bottom: 5px; }
         .mat-list { display: flex; flex-direction: column; gap: 8px; }
         .item-row { display: flex; justify-content: space-between; align-items: center; background: white; padding: 14px 15px; border-radius: 12px; border: 1px solid #e0e6e0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
@@ -198,7 +198,7 @@
     <button class="btn-main" onclick="doCopy()">COPY JIRA FORMAT</button>
 </div>
 
-<div id="toast">✅ Copied in Google Sheet Format!</div>
+<div id="toast">✅ Copied in Jira Format!</div>
 
 <script>
 const inventory = {
@@ -257,7 +257,6 @@ function setPri(type) {
     document.getElementById('lbl_z_loc').innerText = "*ONT Loc*";
     document.getElementById('lbl_z_mac').innerText = "*ONT MAC/SN*";
     document.getElementById('lbl_z_mod').innerText = "ONT Model";
-    // 手动点击选项卡时的默认值
     document.getElementById('ont_mod').value = (type === 'ONT') ? "XS-010x" : "";
 }
 
@@ -266,7 +265,6 @@ function setSec(type) {
     document.getElementById('lbl_r_loc').innerText = "*AP Loc*";
     document.getElementById('lbl_r_mac').innerText = "*AP MAC*";
     document.getElementById('lbl_r_mod').innerText = "AP Model";
-    // 手动点击选项卡时的默认值
     document.getElementById('ap_mod').value = (type === 'Beacon') ? "Beacon 19" : "4960x";
 }
 
@@ -321,21 +319,14 @@ function updateQty(id, n, d) {
     cart[k].q += d;
     if(cart[k].q <= 0) delete cart[k];
     
-    // ============================================
-    // 终极智能联动逻辑：点物料自动切换设备并填型号
-    // ============================================
+    // 智能联动逻辑
     if(d > 0) {
-        // --- Zhone 系列 ---
         if (id === "1001199") { setPri('Zhone'); document.getElementById('ont_mod').value = "2424A1"; }
         else if (id === "1002327") { setPri('Zhone'); document.getElementById('ont_mod').value = "2424gn"; }
         else if (id === "1002324") { setPri('Zhone'); document.getElementById('ont_mod').value = "5222xg"; }
         else if (id === "1001087") { setPri('Zhone'); document.getElementById('ont_mod').value = "Active-e"; }
-        
-        // --- Nokia ONT 系列 ---
         else if (id === "1002557") { setPri('ONT'); document.getElementById('ont_mod').value = "XS-010x"; }
         else if (id === "1002556") { setPri('ONT'); document.getElementById('ont_mod').value = "XS-220x"; }
-        
-        // --- AP 系列 ---
         else if (id === "1002344") { setSec('Airties'); document.getElementById('ap_mod').value = "4960x"; }
         else if (id === "1002555") { setSec('Beacon'); document.getElementById('ap_mod').value = "Beacon 19"; }
     }
@@ -358,6 +349,8 @@ function showPage(id, btn) {
 function doCopy() {
     const val = (id) => document.getElementById(id).value;
     const tgl = (id) => toggles[id];
+    // 用于确保空输入框不会导致 Jira 表格错乱
+    const cell = (v) => (v === "" || v === undefined) ? " " : v;
     
     const panel = (title, content) => `\n{panel:title=${title}|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}\n${content}\n{panel}\n`;
 
@@ -368,7 +361,23 @@ function doCopy() {
     let tests = `Ruby 🚨:${tgl('tg_ruby')}\nLight 💡:@ 1577nm:\n-Suite: ${val('l_suite')} dBm\n-Panel: ${val('l_panel')} dBm\nEXFO 📲:${tgl('tg_exfo')}\nWifi 🛜:${tgl('tg_wifi')}\nPair Test:${tgl('tg_pair')}`;
     r += panel("Tests Completed:", tests);
 
-    let inst = `*ONT Location*:${val('ont_loc')}\n*ONT MAC/SN*:${val('ont_mac')}\nONT Model:${val('ont_mod')}\n*AP Location*:${val('ap_loc')}\n*AP MAC*:${val('ap_mac')}\nAP Model:${val('ap_mod')}\n*TV Box Location*:${val('tv_loc')}\n*TV Box MAC*:${val('tv_mac')}\nTV Box Model:${val('tv_mod')}\n*Phone Location*:${val('ph_loc')}\n*Phone Number*:${val('ph_num')}\n_If the Airties/Beacon was left in the closet, was the customer advised of possible issues with coverage?_\n${tgl('tg_closet')}`;
+    // ==========================================
+    // 关键修复：把 Installation Details 换成表格语法
+    // ==========================================
+    let inst = `|*ONT Location*:|${cell(val('ont_loc'))}|
+|*ONT MAC/SN*:|${cell(val('ont_mac'))}|
+|ONT Model:|${cell(val('ont_mod'))}|
+|*AP Location*:|${cell(val('ap_loc'))}|
+|*AP MAC*:|${cell(val('ap_mac'))}|
+|AP Model:|${cell(val('ap_mod'))}|
+|*TV Box Location*:|${cell(val('tv_loc'))}|
+|*TV Box MAC*:|${cell(val('tv_mac'))}|
+|TV Box Model:|${cell(val('tv_mod'))}|
+|*Phone Location*:|${cell(val('ph_loc'))}|
+|*Phone Number*:|${cell(val('ph_num'))}|
+|_If the Airties/Beacon was left in the closet, was the customer advised of possible issues with coverage?_|
+|${tgl('tg_closet')}|`;
+
     r += panel("Installation Details:", inst);
 
     let cat5 = `Lines Terminated:${val('c5_term')}\nPair Tested:${val('c5_pair')}\nPlugged into the Beacon:${val('c5_plug_b')}\nPlugged into the Zhone:${val('c5_plug_z')}\n_Location(s):_\nLiving Room 🛋️:${val('rm_liv')}\nBedroom #1🛏️:${val('rm_b1')}\nBedroom #2🛏️:${val('rm_b2')}\nDen/Office 📁:${val('rm_den')}\nKitchen 🧑‍🍳:${val('rm_kit')}\n_Was the Customer Notified of $100 Charge for a Return Visit ?_\n${tgl('tg_charge')}`;
