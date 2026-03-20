@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox - Perfect Table & AutoFill</title>
+    <title>Beanfield Toolbox - Full Table Sync</title>
     <style>
         :root { --primary: #2d8a45; --bg: #f4f7f4; --card: #ffffff; --header: #93cc94; --text: #333; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-tap-highlight-color: transparent; }
@@ -195,17 +195,21 @@
 
 <div class="footer">
     <button class="btn-reset" onclick="clearData()">Reset</button>
-    <button class="btn-main" onclick="doCopy()">COPY JIRA FORMAT</button>
+    <button class="btn-main" onclick="doCopy()">COPY FULL TABLES</button>
 </div>
 
-<div id="toast">✅ Copied with Perfect Tables!</div>
+<div id="toast">✅ Copied in Full Table Format!</div>
 
 <script>
 const inventory = {
     "Frequently Used": [
+        // Nokia
         {id:"1002557", n:"Nokia XS-010x ONT"}, {id:"1002589", n:"Nokia ONT Mount - Custom"}, {id:"1002573", n:"Nokia ONT Mount"}, {id:"1002555", n:"Nokia Beacon"},
+        // Zhone
         {id:"1001199", n:"4 port GPON zhone"}, {id:"1002327", n:"NEW ZHONE 2424GN"}, {id:"1002324", n:"XGS Zhone"}, {id:"1002245", n:"GN/XGS Zhone mounts"}, {id:"1000420", n:"Zhone mounts"},
+        // 线材接头
         {id:"1002335", n:"1m LC APC/APC Patches"}, {id:"1002388", n:"APC APC Patches SC-SC"}, {id:"1001083", n:"LC APC connectors"}, {id:"1002322", n:"Fibre jacks"}, {id:"1000289", n:"RJ45 connectors"}, {id:"1000520", n:"White jacks"},
+        // 其他
         {id:"1002344", n:"Airties 4960x"}, {id:"1000526", n:"Heat sleeves"}, {id:"1000715", n:"Screws (8, 3/4)"}, {id:"1000477", n:"Alchohol wipes"}, {id:"1001047", n:"2 port face plates"}, {id:"-", n:"Beanfield Stickers"}, {id:"-", n:"Booties"}
     ],
     "Hardware": [
@@ -293,7 +297,6 @@ function render() {
     }
 }
 
-// 完美保留的智能填充功能！绝不报错
 function updateQty(id, n, d) {
     const k = id + n;
     if(!cart[k]) cart[k] = {id, n, q:0};
@@ -330,20 +333,24 @@ function doCopy() {
     const val = (id) => document.getElementById(id).value;
     const tgl = (id) => toggles[id];
     
-    // 空格保护，防止未填写时表格错位
+    // 空格保护：如果没填，用一个空格代替，防止 Jira 表格因空值而塌陷/错位
     const cell = (v) => (v === "" || v === undefined) ? " " : v;
     
-    // 注意：移除了开头的 \n，这正是保持整个报告像表格一样紧凑拼接的关键！
     const panel = (title, content) => `{panel:title=${title}|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}\n${content}\n{panel}\n`;
 
     let r = "";
-    r += panel("Technician(s):", `Inside:${val('bf_in')}\nOutside:${val('bf_out')}`);
-    r += panel("Network:", `${val('bf_net')}`);
+    r += panel("Technician(s):", `|Inside:|${cell(val('bf_in'))}|\n|Outside:|${cell(val('bf_out'))}|`);
+    r += panel("Network:", `|Network:|${cell(val('bf_net'))}|`);
     
-    let tests = `Ruby 🚨:${tgl('tg_ruby')}\nLight 💡:@ 1577nm:\n-Suite: ${val('l_suite')} dBm\n-Panel: ${val('l_panel')} dBm\nEXFO 📲:${tgl('tg_exfo')}\nWifi 🛜:${tgl('tg_wifi')}\nPair Test:${tgl('tg_pair')}`;
+    let tests = `|Ruby 🚨:|${tgl('tg_ruby')}|
+|Light 💡:@ 1577nm:| |
+|-Suite:|${cell(val('l_suite'))} dBm|
+|-Panel:|${cell(val('l_panel'))} dBm|
+|EXFO 📲:|${tgl('tg_exfo')}|
+|Wifi 🛜:|${tgl('tg_wifi')}|
+|Pair Test:|${tgl('tg_pair')}|`;
     r += panel("Tests Completed:", tests);
 
-    // 完美复活的表格样式！
     let inst = `|*ONT Location*:|${cell(val('ont_loc'))}|
 |*ONT MAC/SN*:|${cell(val('ont_mac'))}|
 |ONT Model:|${cell(val('ont_mod'))}|
@@ -355,22 +362,40 @@ function doCopy() {
 |TV Box Model:|${cell(val('tv_mod'))}|
 |*Phone Location*:|${cell(val('ph_loc'))}|
 |*Phone Number*:|${cell(val('ph_num'))}|
-|_If the Airties/Beacon was left in the closet, was the customer advised of possible issues with coverage?_|
-|${tgl('tg_closet')}|`;
+|_If the Airties/Beacon was left in the closet, was the customer advised of possible issues with coverage?_|${tgl('tg_closet')}|`;
     r += panel("Installation Details:", inst);
 
-    let cat5 = `Lines Terminated:${val('c5_term')}\nPair Tested:${val('c5_pair')}\nPlugged into the Beacon:${val('c5_plug_b')}\nPlugged into the Zhone:${val('c5_plug_z')}\n_Location(s):_\nLiving Room 🛋️:${val('rm_liv')}\nBedroom #1🛏️:${val('rm_b1')}\nBedroom #2🛏️:${val('rm_b2')}\nDen/Office 📁:${val('rm_den')}\nKitchen 🧑‍🍳:${val('rm_kit')}\n_Was the Customer Notified of $100 Charge for a Return Visit ?_\n${tgl('tg_charge')}`;
+    let cat5 = `|Lines Terminated:|${cell(val('c5_term'))}|
+|Pair Tested:|${cell(val('c5_pair'))}|
+|Plugged into the Beacon:|${cell(val('c5_plug_b'))}|
+|Plugged into the Zhone:|${cell(val('c5_plug_z'))}|
+|_Location(s):_| |
+|Living Room 🛋️:|${cell(val('rm_liv'))}|
+|Bedroom #1🛏️:|${cell(val('rm_b1'))}|
+|Bedroom #2🛏️:|${cell(val('rm_b2'))}|
+|Den/Office 📁:|${cell(val('rm_den'))}|
+|Kitchen 🧑‍🍳:|${cell(val('rm_kit'))}|
+|_Was the Customer Notified of $100 Charge for a Return Visit ?_|${tgl('tg_charge')}|`;
     r += panel("Cat5 Termination:", cat5);
 
-    r += panel("Riser Info:", `Floor:${val('r_floor')}\nPanel:/Switch${val('r_panel')}\nPort:${val('r_port')}`);
+    let rInfo = `|Floor:|${cell(val('r_floor'))}|
+|Panel:/Switch|${cell(val('r_panel'))}|
+|Port:|${cell(val('r_port'))}|`;
+    r += panel("Riser Info:", rInfo);
     
-    let fMark = `Pre Wired:${tgl('tg_pre')}\nRiser =${val('f_riser')}m\nSuite =${val('f_suite')}m\nTotal =${val('f_total')}m`;
+    let fMark = `|Pre Wired:|${tgl('tg_pre')}|
+|Riser =|${cell(val('f_riser'))}m|
+|Suite =|${cell(val('f_suite'))}m|
+|Total =|${cell(val('f_total'))}m|`;
     r += panel("Fibre Meter Mark:", fMark);
 
-    let sTime = val('t_start') ? convertTime(val('t_start')) : "";
-    r += panel("Time on Site:", `* Start Time:${sTime}\n* End Time:${val('t_end')}\n*Time on Site:${val('t_total')}`);
+    let sTime = val('t_start') ? convertTime(val('t_start')) : " ";
+    let tSite = `|* Start Time:|${sTime}|
+|* End Time:|${cell(val('t_end'))}|
+|*Time on Site:|${cell(val('t_total'))}|`;
+    r += panel("Time on Site:", tSite);
 
-    r += panel("Hub Stock Location:", `Location:${val('hub')}`);
+    r += panel("Hub Stock Location:", `|Location:|${cell(val('hub'))}|`);
 
     let matOut = "";
     let hasItems = false;
@@ -384,12 +409,17 @@ function doCopy() {
             hasItems = true;
         }
     }
-    r += panel("Material List:", hasItems ? matMarkupTrim(matOut) : "None");
+    r += panel("Material List:", hasItems ? matOut.replace(/\n$/, "") : "None");
 
+    // 备注保持纯文本最舒服
     let nts = val('notes') ? `${val('notes')}**` : "**";
     r += panel("Additional Notes:", nts);
 
-    r += panel("Splitter Activation:", `Floor:${val('s_floor')}\nPanel:${val('s_panel')}\nSplitter:${val('s_split')}\nBulkheads Installed:${val('s_bulk')}*`);
+    let sAct = `|Floor:|${cell(val('s_floor'))}|
+|Panel:|${cell(val('s_panel'))}|
+|Splitter:|${cell(val('s_split'))}|
+|Bulkheads Installed:|${cell(val('s_bulk'))}*|`;
+    r += panel("Splitter Activation:", sAct);
 
     const el = document.createElement('textarea'); el.value = r.trim(); document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
     
@@ -397,8 +427,6 @@ function doCopy() {
     toast.className = "show";
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
 }
-
-function matMarkupTrim(str) { return str.replace(/\n$/, ""); }
 
 function convertTime(time24) {
     let [h, m] = time24.split(':');
