@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beanfield Toolbox - Clean List</title>
+    <title>Beanfield Toolbox - Ultimate Auto-fill</title>
     <style>
         :root { --primary: #2d8a45; --bg: #f4f7f4; --card: #ffffff; --header: #93cc94; --text: #333; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-tap-highlight-color: transparent; }
@@ -252,6 +252,24 @@ function setT(gid, v) {
     document.getElementById(gid).querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.innerText === v));
 }
 
+function setPri(type) {
+    toggles['pri_type'] = type;
+    document.getElementById('lbl_z_loc').innerText = "*ONT Loc*";
+    document.getElementById('lbl_z_mac').innerText = "*ONT MAC/SN*";
+    document.getElementById('lbl_z_mod').innerText = "ONT Model";
+    // 手动点击选项卡时的默认值
+    document.getElementById('ont_mod').value = (type === 'ONT') ? "XS-010x" : "";
+}
+
+function setSec(type) {
+    toggles['sec_type'] = type;
+    document.getElementById('lbl_r_loc').innerText = "*AP Loc*";
+    document.getElementById('lbl_r_mac').innerText = "*AP MAC*";
+    document.getElementById('lbl_r_mod').innerText = "AP Model";
+    // 手动点击选项卡时的默认值
+    document.getElementById('ap_mod').value = (type === 'Beacon') ? "Beacon 19" : "4960x";
+}
+
 function calcF() {
     const r = parseFloat(document.getElementById('f_riser').value) || 0;
     const s = parseFloat(document.getElementById('f_suite').value) || 0;
@@ -303,11 +321,25 @@ function updateQty(id, n, d) {
     cart[k].q += d;
     if(cart[k].q <= 0) delete cart[k];
     
+    // ============================================
+    // 终极智能联动逻辑：点物料自动切换设备并填型号
+    // ============================================
     if(d > 0) {
-        if (id === "1001199") document.getElementById('ont_mod').value = "2424A1";
-        else if (id === "1002327") document.getElementById('ont_mod').value = "2424gn";
-        else if (id === "1002324") document.getElementById('ont_mod').value = "5222xg";
+        // --- Zhone 系列 ---
+        if (id === "1001199") { setPri('Zhone'); document.getElementById('ont_mod').value = "2424A1"; }
+        else if (id === "1002327") { setPri('Zhone'); document.getElementById('ont_mod').value = "2424gn"; }
+        else if (id === "1002324") { setPri('Zhone'); document.getElementById('ont_mod').value = "5222xg"; }
+        else if (id === "1001087") { setPri('Zhone'); document.getElementById('ont_mod').value = "Active-e"; }
+        
+        // --- Nokia ONT 系列 ---
+        else if (id === "1002557") { setPri('ONT'); document.getElementById('ont_mod').value = "XS-010x"; }
+        else if (id === "1002556") { setPri('ONT'); document.getElementById('ont_mod').value = "XS-220x"; }
+        
+        // --- AP 系列 ---
+        else if (id === "1002344") { setSec('Airties'); document.getElementById('ap_mod').value = "4960x"; }
+        else if (id === "1002555") { setSec('Beacon'); document.getElementById('ap_mod').value = "Beacon 19"; }
     }
+    
     render();
 }
 
