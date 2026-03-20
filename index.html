@@ -200,7 +200,7 @@
 <div id="toast">✅ Copied in Google Sheet Format!</div>
 
 <script>
-// 坚决捍卫你的老物料表结构和顺序！
+// 你的物料结构
 const inventory = {
     "Frequently Used": [
         // Nokia
@@ -335,7 +335,8 @@ function doCopy() {
     r += panel("Technician(s):", `Inside:${val('bf_in')}\nOutside:${val('bf_out')}`);
     r += panel("Network:", `${val('bf_net')}`);
     
-    let tests = `Ruby 🚨:${tgl('tg_ruby')}\nLight 💡:@ 1577nm:\n-Suite: ${val('l_suite')} dBm\n-Panel: ${val('l_panel')} dBm\nC = light in suite\nD = light at panel\nEXFO 📲:${tgl('tg_exfo')}\nWifi 🛜:${tgl('tg_wifi')}\nPair Test:${tgl('tg_pair')}`;
+    // 删除了 C=light 和 D=light 这两行
+    let tests = `Ruby 🚨:${tgl('tg_ruby')}\nLight 💡:@ 1577nm:\n-Suite: ${val('l_suite')} dBm\n-Panel: ${val('l_panel')} dBm\nEXFO 📲:${tgl('tg_exfo')}\nWifi 🛜:${tgl('tg_wifi')}\nPair Test:${tgl('tg_pair')}`;
     r += panel("Tests Completed:", tests);
 
     let inst = `*ONT Location*:${val('ont_loc')}\n*ONT MAC/SN*:${val('ont_mac')}\nONT Model:${val('ont_mod')}\n*AP Location*:${val('ap_loc')}\n*AP MAC*:${val('ap_mac')}\nAP Model:${val('ap_mod')}\n*TV Box Location*:${val('tv_loc')}\n*TV Box MAC*:${val('tv_mac')}\nTV Box Model:${val('tv_mod')}\n*Phone Location*:${val('ph_loc')}\n*Phone Number*:${val('ph_num')}\n_If the Airties/Beacon was left in the closet, was the customer advised of possible issues with coverage?_\n${tgl('tg_closet')}`;
@@ -354,7 +355,6 @@ function doCopy() {
 
     r += panel("Hub Stock Location:", `Location:${val('hub')}`);
 
-    // 物料严格使用你要求的 5 大类标题输出
     let matOut = "";
     let hasItems = false;
     for(let cat in inventory) {
