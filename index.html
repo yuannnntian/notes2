@@ -3,165 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Toolbox - Material Test</title>
+    <title>Beanfield Toolbox - Ultimate Sync</title>
     <style>
-        :root { --primary: #2d8a45; --bg: #f2f7f2; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
-        .page { padding: 12px; padding-bottom: 100px; }
+        :root { --primary: #2d8a45; --bg: #f4f7f4; --card: #ffffff; --header: #93cc94; --text: #333; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-tap-highlight-color: transparent; }
         
-        .cat-title { font-size: 14px; font-weight: 800; margin: 20px 0 8px 5px; color: #113311; text-transform: uppercase; border-bottom: 2px solid #d0ddd0; padding-bottom: 4px; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e0e6e0; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .mat-name { font-size: 15px; font-weight: bold; color: #222; margin-bottom: 4px; }
-        .mat-sap { font-size: 12px; color: #888; font-family: monospace; }
+        .nav-tabs { position: sticky; top: 0; display: flex; background: #fff; padding: 12px; gap: 10px; z-index: 2000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tab-btn { flex: 1; border: none; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700; background: #f0f0f0; color: #888; transition: all 0.2s ease; }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(40,167,69,0.3); }
+
+        .page { display: none; padding: 15px; padding-bottom: 130px; animation: fadeIn 0.2s ease-out; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 物料网格 - 紧凑两列 */
+        .category-title { margin: 25px 0 10px 5px; font-size: 14px; font-weight: 800; color: #444; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #d0ddd0; padding-bottom: 5px; }
+        .mat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .mat-card { background: white; padding: 12px; border-radius: 12px; border: 1px solid #e0e6e0; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .mat-name { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; color: #222; min-height: 34px; }
+        .mat-sap { font-size: 11px; color: #888; margin-bottom: 10px; font-family: monospace; }
+        .qty-ctrl { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border-radius: 20px; padding: 2px 4px; }
+        .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; background: white; color: var(--primary); font-weight: bold; font-size: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; }
+        .qty-btn:active { transform: scale(0.95); }
+        .qty-val { font-weight: 800; font-size: 15px; color: var(--primary); min-width: 20px; text-align: center; }
+
+        /* 表单样式 */
+        .card { background: white; border-radius: 12px; margin-bottom: 15px; border: 1px solid #e0e6e0; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        h3 { margin: 0; font-size: 13px; color: #113311; background: var(--header); padding: 12px 15px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #d0ddd0; }
+        .card-body { padding: 15px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #666; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline: none; background: #fafafa; margin-bottom: 12px; }
+        input:focus, textarea:focus { border-color: var(--primary); background: #fff; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
-        .qty-ctrl { display: flex; align-items: center; gap: 15px; background: #f8f9fa; padding: 4px 6px; border-radius: 20px; }
-        .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: white; font-weight: bold; font-size: 18px; color: var(--primary); }
-        .qty-val { font-weight: 900; font-size: 16px; min-width: 20px; text-align: center; }
-        
-        .footer { position: fixed; bottom: 0; width: 100%; background: #fff; border-top: 1px solid #ccc; padding: 15px; box-sizing: border-box; }
-        .btn-main { width: 100%; border: none; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 16px; color: white; background: var(--primary); }
+        .toggle-group { display: flex; gap: 6px; background: #f0f0f0; padding: 4px; border-radius: 8px; margin-bottom: 12px; }
+        .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; border: none; background: transparent; font-size: 13px; font-weight: 700; color: #777; transition: all 0.2s; }
+        .toggle-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+        .footer { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 15px 20px; border-top: 1px solid #eaeaea; box-sizing: border-box; display: flex; gap: 12px; z-index: 2000; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
+        .btn-main { flex: 3; border: none; padding: 16px; border-radius: 12px; font-weight: 800; font-size: 16px; color: white; background: var(--primary); box-shadow: 0 4px 15px rgba(40,167,69,0.3); cursor: pointer; }
+        .btn-reset { flex: 1; background: #ffebee; color: #d32f2f; border: 1px solid #ffcdd2; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; }
+
+        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 10px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 100px; transform: translateX(-50%); font-size: 15px; font-weight: bold; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 120px; }
     </style>
 </head>
 <body>
 
-<div class="page active">
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="showPage('picker', this)">📦 Materials</button>
+    <button class="tab-btn" onclick="showPage('beanfield', this)">📄 Jira Form</button>
+</div>
+
+<div id="picker" class="page active">
+    <input type="text" id="matSearch" placeholder="🔍 Quick Search SAP or Name..." onkeyup="filterMats()" style="margin-bottom:5px; border-radius: 20px; padding: 12px 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
     <div id="mat-container"></div>
 </div>
 
-<div class="footer">
-    <button class="btn-main" onclick="testCopy()">COPY MATERIAL JIRA FORMAT</button>
+<div id="beanfield" class="page">
+    <div class="card">
+        <h3>Technician(s) & Network</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Inside Tech</label><input type="text" id="bf_in" onchange="saveData()" placeholder="e.g. Yuan"></div>
+                <div><label>Outside Tech</label><input type="text" id="bf_out" placeholder="e.g. Tian"></div>
+            </div>
+            <label>Network</label><input type="text" id="bf_net" value="Beanfield">
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Tests Completed</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Ruby 🚨</label><div class="toggle-group" id="tg_ruby"><button class="toggle-btn active" onclick="setT('tg_ruby','Yes')">Yes</button><button class="toggle-btn" onclick="setT('tg_ruby','No')">No</button></div></div>
+                <div><label>EXFO 📲</label><div class="toggle-group" id="tg_exfo"><button class="toggle-btn active" onclick="setT('tg_exfo','Yes')">Yes</button><button class="toggle-btn" onclick="setT('tg_exfo','No')">No</button></div></div>
+                <div><label>Wifi 🛜</label><div class="toggle-group" id="tg_wifi"><button class="toggle-btn active" onclick="setT('tg_wifi','Yes')">Yes</button><button class="toggle-btn" onclick="setT('tg_wifi','No')">No</button></div></div>
+                <div><label>Pair Test</label><div class="toggle-group" id="tg_pair"><button class="toggle-btn active" onclick="setT('tg_pair','Yes')">Yes</button><button class="toggle-btn" onclick="setT('tg_pair','No')">No</button></div></div>
+            </div>
+            <label>Light 💡: @ 1577nm</label>
+            <div class="grid">
+                <div><label>-Suite (dBm)</label><input type="text" id="l_suite" placeholder="-18.00"></div>
+                <div><label>-Panel (dBm)</label><input type="text" id="l_panel" placeholder="-20.00"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Installation Details</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>*ONT Loc*</label><input type="text" id="ont_loc" placeholder="Smart Panel"></div>
+                <div><label>*ONT MAC/SN*</label><input type="text" id="ont_mac"></div>
+            </div>
+            <label>ONT Model</label><input type="text" id="ont_mod" value="Nokia - 10x-R">
+            
+            <hr style="border-top:1px solid #eee; margin:5px 0 15px 0;">
+            <div class="grid">
+                <div><label>*AP Loc*</label><input type="text" id="ap_loc" placeholder="Living Room"></div>
+                <div><label>*AP MAC*</label><input type="text" id="ap_mac"></div>
+            </div>
+            <label>AP Model</label><input type="text" id="ap_mod" value="Nokia - Beacon">
+            
+            <hr style="border-top:1px solid #eee; margin:5px 0 15px 0;">
+            <div class="grid">
+                <div><label>*TV Box Loc*</label><input type="text" id="tv_loc"></div>
+                <div><label>*TV Box MAC*</label><input type="text" id="tv_mac"></div>
+            </div>
+            <label>TV Box Model</label><input type="text" id="tv_mod">
+            
+            <hr style="border-top:1px solid #eee; margin:5px 0 15px 0;">
+            <div class="grid">
+                <div><label>*Phone Loc*</label><input type="text" id="ph_loc"></div>
+                <div><label>*Phone Number*</label><input type="text" id="ph_num"></div>
+            </div>
+            <label>Airties/Beacon in closet advised?</label>
+            <div class="toggle-group" id="tg_closet"><button class="toggle-btn active" onclick="setT('tg_closet','Yes')">Yes</button><button class="toggle-btn" onclick="setT('tg_closet','No')">No</button></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Cat5 Termination</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Lines Terminated</label><input type="text" id="c5_term" placeholder="1/6"></div>
+                <div><label>Pair Tested</label><input type="text" id="c5_pair" placeholder="1/6"></div>
+                <div><label>Plug into Beacon</label><input type="text" id="c5_plug_b" placeholder="1/4"></div>
+                <div><label>Plug into Zhone</label><input type="text" id="c5_plug_z" placeholder="1/4"></div>
+            </div>
+            
+            <label style="margin-top:5px; color:#2d8a45;">_Location(s):_</label>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;"><span style="width:130px; font-size:14px; font-weight:bold;">Living Room 🛋️:</span><input type="text" id="rm_liv" style="margin:0;"></div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;"><span style="width:130px; font-size:14px; font-weight:bold;">Bedroom #1🛏️:</span><input type="text" id="rm_b1" style="margin:0;"></div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;"><span style="width:130px; font-size:14px; font-weight:bold;">Bedroom #2🛏️:</span><input type="text" id="rm_b2" style="margin:0;"></div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;"><span style="width:130px; font-size:14px; font-weight:bold;">Den/Office 📁:</span><input type="text" id="rm_den" style="margin:0;"></div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;"><span style="width:130px; font-size:14px; font-weight:bold;">Kitchen 🧑‍🍳:</span><input type="text" id="rm_kit" style="margin:0;"></div>
+            
+            <label>$100 Charge Notified?</label>
+            <div class="toggle-group" id="tg_charge"><button class="toggle-btn active" onclick="setT('tg_charge','Yes')">Yes</button><button class="toggle-btn" onclick="setT('tg_charge','No')">No</button></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Riser & Fibre Meter</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Floor</label><input type="text" id="r_floor" placeholder="01"></div>
+                <div><label>Panel:/Switch</label><input type="text" id="r_panel" placeholder="02"></div>
+            </div>
+            <label>Port</label><input type="text" id="r_port" placeholder="34">
+            
+            <hr style="border-top:1px solid #eee; margin:5px 0 15px 0;">
+            <label>Pre Wired</label>
+            <div class="toggle-group" id="tg_pre"><button class="toggle-btn active" onclick="setT('tg_pre','Yes')">Yes</button><button class="toggle-btn" onclick="setT('tg_pre','No')">No</button></div>
+            <div class="grid">
+                <div><label>Riser (m)</label><input type="number" id="f_riser" oninput="calcF()"></div>
+                <div><label>Suite (m)</label><input type="number" id="f_suite" oninput="calcF()"></div>
+            </div>
+            <label>Total (m)</label><input type="text" id="f_total" readonly style="background:#e8f5e9; font-weight:bold; color:var(--primary);">
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Time, Hub & Splitter</h3>
+        <div class="card-body">
+            <div class="grid">
+                <div><label>Start Time</label><input type="time" id="t_start" onchange="calcT()"></div>
+                <div><label>End Time</label><input type="time" id="t_end" onchange="calcT()"></div>
+            </div>
+            <label>Time on Site</label><input type="text" id="t_total" readonly style="background:#e8f5e9; font-weight:bold; color:var(--primary);">
+            
+            <label style="margin-top:15px;">Hub Stock Location</label><input type="text" id="hub" value="2206 Eglinton">
+            
+            <hr style="border-top:1px solid #eee; margin:5px 0 15px 0;">
+            <label>Splitter Activation</label>
+            <div class="grid">
+                <div><label>Floor</label><input type="text" id="s_floor"></div>
+                <div><label>Panel</label><input type="text" id="s_panel"></div>
+                <div><label>Splitter</label><input type="text" id="s_split"></div>
+                <div><label>Bulkheads Installed</label><input type="text" id="s_bulk"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Additional Notes</h3>
+        <div class="card-body"><textarea id="notes" rows="3"></textarea></div>
+    </div>
 </div>
 
+<div class="footer">
+    <button class="btn-reset" onclick="clearData()">Reset</button>
+    <button class="btn-main" onclick="doCopy()">COPY JIRA FORMAT</button>
+</div>
+
+<div id="toast">✅ Copied in Google Sheet Format!</div>
+
 <script>
-// 注意这里的 outCat，它是用来在后台瞒天过海，转换成 Google Sheet 分类的！
+// 坚决捍卫你的老物料表结构和顺序！
 const inventory = {
     "Frequently Used": [
-        // --- Nokia 组 ---
-        {id:"1002557", n:"Nokia XS-010X-R", outCat: "Hardware"},
-        {id:"1002589", n:"Nokia ONT Mount - Custom", outCat: "Other"},
-        {id:"1002573", n:"Nokia ONT Mount - Factory", outCat: "Other"},
-        {id:"1002555", n:"Nokia Beacon 19", outCat: "Hardware"},
-        
-        // --- Zhone 组 ---
-        {id:"1001199", n:"4 port GPON zhone", outCat: "Hardware"},
-        {id:"1002327", n:"NEW ZHONE 2424GN", outCat: "Hardware"},
-        {id:"1002324", n:"5222XG Zhone", outCat: "Hardware"},
-        {id:"1002245", n:"GN/XGS Zhone mounts", outCat: "Other"},
-        {id:"1000420", n:"Zhone mounts", outCat: "Other"},
-        
-        // --- 线缆与接头组 ---
-        {id:"1002335", n:"1m LC APC/APC Patches", outCat: "Fibre"},
-        {id:"1002388", n:"SC APC SC APC Patches", outCat: "Fibre"},
-        {id:"1001083", n:"LC APC Connector", outCat: "Fibre"},
-        {id:"1002322", n:"Fibre Jack", outCat: "Fibre"},
-        {id:"1000289", n:"RJ45 Connector", outCat: "Copper"},
-        {id:"1000520", n:"White Jacks", outCat: "Copper"},
-        
-        // --- 其他常用杂项 ---
-        {id:"1002344", n:"Airties 4960x", outCat: "Hardware"},
-        {id:"1000526", n:"Heat Sleeve 40mm", outCat: "Fibre"},
-        {id:"1000715", n:"Screws (8, 3/4)", outCat: "Other"},
-        {id:"1000477", n:"Alchohol wipes", outCat: "Other"},
-        {id:"1001047", n:"2 Port Faceplate", outCat: "Copper"},
-        {id:"-", n:"Beanfield Stickers", outCat: "Other"},
-        {id:"-", n:"Booties", outCat: "Other"}
+        // Nokia
+        {id:"1002557", n:"Nokia XS-010x ONT"}, {id:"1002589", n:"Nokia ONT Mount - Custom"}, {id:"1002573", n:"Nokia ONT Mount"}, {id:"1002555", n:"Nokia Beacon"},
+        // Zhone
+        {id:"1001199", n:"4 port GPON zhone"}, {id:"1002327", n:"NEW ZHONE 2424GN"}, {id:"1002324", n:"XGS Zhone"}, {id:"1002245", n:"GN/XGS Zhone mounts"}, {id:"1000420", n:"Zhone mounts"},
+        // 线材接头
+        {id:"1002335", n:"1m LC APC/APC Patches"}, {id:"1002388", n:"APC APC Patches SC-SC"}, {id:"1001083", n:"LC APC connectors"}, {id:"1002322", n:"Fibre jacks"}, {id:"1000289", n:"RJ45 connectors"}, {id:"1000520", n:"White jacks"},
+        // 其他
+        {id:"1002344", n:"Airties 4960x"}, {id:"1000526", n:"Heat sleeves"}, {id:"1000715", n:"Screws (8, 3/4)"}, {id:"1000477", n:"Alchohol wipes"}, {id:"1001047", n:"2 port face plates"}, {id:"-", n:"Beanfield Stickers"}, {id:"-", n:"Booties"}
     ],
     "Hardware": [
-        {id:"1001087", n:"Active-e zhone", outCat: "Hardware"},
-        {id:"1002556", n:"Nokia XS-220x VOIP", outCat: "Hardware"},
-        {id:"1001554", n:"SML TV Box", outCat: "Hardware"},
-        {id:"1002407", n:"Archer C20 (100MBS)", outCat: "Hardware"},
-        {id:"1002481", n:"TP LINK ARCHER AX23", outCat: "Hardware"}
+        {id:"1001087", n:"Active-e zhone"}, {id:"1002556", n:"Nokia XS-220x VOIP ONT"}
     ],
-    "Fibre": [
-        {id:"1001084", n:"SC APC connectors", outCat: "Fibre"},
-        {id:"1000422", n:"LC UPC 250/900", outCat: "Fibre"},
-        {id:"1000476", n:"SC UPC", outCat: "Fibre"}
+    "Fiber": [
+        {id:"1001084", n:"SC APC connectors"}, {id:"1000422", n:"LC UPC 250/900"}, {id:"1000476", n:"SC UPC"}
     ],
     "Copper": [
-        {id:"1001048", n:"4 port faceplates", outCat: "Copper"},
-        {id:"1001049", n:"Coax Insert", outCat: "Copper"},
-        {id:"1000254", n:"3ft cat5 patch cable", outCat: "Copper"},
-        {id:"1000497", n:"5ft cat5 patch cable", outCat: "Copper"},
-        {id:"1000253", n:"10ft cat5 patch cable", outCat: "Copper"}
+        {id:"1001048", n:"4 port faceplates"}, {id:"1001049", n:"Coax connectors"}, {id:"1000254", n:"3ft cat5 patch cable"},
+        {id:"1000497", n:"5ft cat5 patch cable"}, {id:"1000253", n:"10ft cat5 patch cable"}
     ],
     "OTHER": [
-        {id:"1001208", n:"Power Extension", outCat: "Other"},
-        {id:"1000627", n:"Dry wall anchors", outCat: "Other"},
-        {id:"1000137", n:"Saddles (small)", outCat: "Other"},
-        {id:"1000136", n:"Saddles (large)", outCat: "Other"},
-        {id:"1000501", n:"Phone Dongles", outCat: "Other"}
+        {id:"1001208", n:"Power Extension"}, {id:"1000627", n:"Dry wall anchors"}, {id:"1000137", n:"Saddles (small)"},
+        {id:"1000136", n:"Saddles (large)"}, {id:"1001554", n:"SML TV Box"}, {id:"1000501", n:"Phone Dongles"},
+        {id:"1002407", n:"Archer C20 (100MBS)"}, {id:"1002481", n:"TP LINK ARCHER AX23 (750MBS)"}
     ]
 };
 
 let cart = {};
+let toggles = { 'tg_ruby':'Yes', 'tg_exfo':'Yes', 'tg_wifi':'Yes', 'tg_pair':'Yes', 'tg_closet':'Yes', 'tg_charge':'Yes', 'tg_pre':'Yes' };
+
+window.onload = () => { 
+    if(localStorage.getItem('bf_tech_in')) document.getElementById('bf_in').value = localStorage.getItem('bf_tech_in');
+    render(); 
+};
+
+function saveData() { localStorage.setItem('bf_tech_in', document.getElementById('bf_in').value); }
+
+function clearData() {
+    if(confirm("Clear inputs? (Name will be saved)")) {
+        cart = {};
+        document.querySelectorAll('input[type="text"]:not(#bf_in):not(#bf_net):not(#ont_mod):not(#ap_mod):not(#hub), input[type="number"], input[type="time"], textarea').forEach(i => i.value = "");
+        calcF(); render();
+    }
+}
+
+function setT(gid, v) {
+    toggles[gid] = v;
+    document.getElementById(gid).querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.innerText === v));
+}
+
+function calcF() {
+    const r = parseFloat(document.getElementById('f_riser').value) || 0;
+    const s = parseFloat(document.getElementById('f_suite').value) || 0;
+    document.getElementById('f_total').value = (r || s) ? Math.abs(s - r) : "";
+}
+
+function calcT() {
+    let s = document.getElementById('t_start').value;
+    let e = document.getElementById('t_end').value;
+    if(s && e) {
+        let d1 = new Date(`1970-01-01T${s}:00`);
+        let d2 = new Date(`1970-01-01T${e}:00`);
+        let diff = (d2 - d1) / 1000;
+        if(diff < 0) diff += 86400;
+        let hrs = Math.floor(diff / 3600);
+        let mins = Math.floor((diff % 3600) / 60);
+        let secs = Math.floor(diff % 60);
+        document.getElementById('t_total').value = `${hrs}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+    }
+}
 
 function render() {
     const cont = document.getElementById('mat-container');
     cont.innerHTML = "";
     for(let cat in inventory) {
-        let h = `<div class="cat-title">${cat}</div>`;
+        let h = `<div class="category-title">${cat}</div><div class="mat-grid">`;
         inventory[cat].forEach(item => {
             const k = item.id + item.n;
             const q = cart[k]?.q || 0;
-            h += `<div class="item-row">
+            h += `<div class="mat-card">
                 <div>
                     <div class="mat-name">${item.n}</div>
                     <div class="mat-sap">SAP: ${item.id}</div>
                 </div>
                 <div class="qty-ctrl">
-                    <button class="qty-btn" onclick="updateQty('${item.id}','${item.n}','${item.outCat}',-1)">-</button>
+                    <button class="qty-btn" onclick="updateQty('${item.id}','${item.n}',-1)">-</button>
                     <span class="qty-val">${q}</span>
-                    <button class="qty-btn" onclick="updateQty('${item.id}','${item.n}','${item.outCat}',1)">+</button>
+                    <button class="qty-btn" onclick="updateQty('${item.id}','${item.n}',1)">+</button>
                 </div>
             </div>`;
         });
-        cont.innerHTML += h;
+        cont.innerHTML += h + `</div>`;
     }
 }
 
-function updateQty(id, n, outCat, d) {
+function updateQty(id, n, d) {
     const k = id + n;
-    // 这里把 outCat 存进购物车，为最后的分类做准备
-    if(!cart[k]) cart[k] = {id, n, outCat, q:0};
+    if(!cart[k]) cart[k] = {id, n, q:0};
     cart[k].q += d;
     if(cart[k].q <= 0) delete cart[k];
+    
+    // 智能联动：选Zhone自动填Model
+    if(d > 0) {
+        if (id === "1001199") document.getElementById('ont_mod').value = "2424A1";
+        else if (id === "1002327") document.getElementById('ont_mod').value = "2424gn";
+        else if (id === "1002324") document.getElementById('ont_mod').value = "5222xg";
+    }
     render();
 }
 
-function testCopy() {
-    // 1. 准备 4 个空桶，严格匹配 Google Sheet 的分类
-    let sortedMats = { "Copper": [], "Fibre": [], "Hardware": [], "Other": [] };
-    let hasItems = false;
+function filterMats() {
+    let v = document.getElementById('matSearch').value.toLowerCase();
+    document.querySelectorAll('.mat-card').forEach(c => c.style.display = c.innerText.toLowerCase().includes(v) ? "flex" : "none");
+}
+
+function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function doCopy() {
+    const val = (id) => document.getElementById(id).value;
+    const tgl = (id) => toggles[id];
     
-    // 2. 把购物车里的东西，按照暗标签（outCat）扔进对应的桶里
-    for(let k in cart) {
-        let cat = cart[k].outCat;
-        if(sortedMats[cat]) {
-            sortedMats[cat].push(cart[k]);
+    // Jira Panel 换行保护构造器
+    const panel = (title, content) => `\n{panel:title=${title}|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}\n${content}\n{panel}\n`;
+
+    let r = "";
+    r += panel("Technician(s):", `Inside:${val('bf_in')}\nOutside:${val('bf_out')}`);
+    r += panel("Network:", `${val('bf_net')}`);
+    
+    let tests = `Ruby 🚨:${tgl('tg_ruby')}\nLight 💡:@ 1577nm:\n-Suite: ${val('l_suite')} dBm\n-Panel: ${val('l_panel')} dBm\nC = light in suite\nD = light at panel\nEXFO 📲:${tgl('tg_exfo')}\nWifi 🛜:${tgl('tg_wifi')}\nPair Test:${tgl('tg_pair')}`;
+    r += panel("Tests Completed:", tests);
+
+    let inst = `*ONT Location*:${val('ont_loc')}\n*ONT MAC/SN*:${val('ont_mac')}\nONT Model:${val('ont_mod')}\n*AP Location*:${val('ap_loc')}\n*AP MAC*:${val('ap_mac')}\nAP Model:${val('ap_mod')}\n*TV Box Location*:${val('tv_loc')}\n*TV Box MAC*:${val('tv_mac')}\nTV Box Model:${val('tv_mod')}\n*Phone Location*:${val('ph_loc')}\n*Phone Number*:${val('ph_num')}\n_If the Airties/Beacon was left in the closet, was the customer advised of possible issues with coverage?_\n${tgl('tg_closet')}`;
+    r += panel("Installation Details:", inst);
+
+    let cat5 = `Lines Terminated:${val('c5_term')}\nPair Tested:${val('c5_pair')}\nPlugged into the Beacon:${val('c5_plug_b')}\nPlugged into the Zhone:${val('c5_plug_z')}\n_Location(s):_\nLiving Room 🛋️:${val('rm_liv')}\nBedroom #1🛏️:${val('rm_b1')}\nBedroom #2🛏️:${val('rm_b2')}\nDen/Office 📁:${val('rm_den')}\nKitchen 🧑‍🍳:${val('rm_kit')}\n_Was the Customer Notified of $100 Charge for a Return Visit ?_\n${tgl('tg_charge')}`;
+    r += panel("Cat5 Termination:", cat5);
+
+    r += panel("Riser Info:", `Floor:${val('r_floor')}\nPanel:/Switch${val('r_panel')}\nPort:${val('r_port')}`);
+    
+    let fMark = `Pre Wired:${tgl('tg_pre')}\nRiser =${val('f_riser')}m\nSuite =${val('f_suite')}m\nTotal =${val('f_total')}m`;
+    r += panel("Fibre Meter Mark:", fMark);
+
+    let sTime = val('t_start') ? convertTime(val('t_start')) : "";
+    r += panel("Time on Site:", `* Start Time:${sTime}\n* End Time:${val('t_end')}\n*Time on Site:${val('t_total')}`);
+
+    r += panel("Hub Stock Location:", `Location:${val('hub')}`);
+
+    // 物料严格使用你要求的 5 大类标题输出
+    let matOut = "";
+    let hasItems = false;
+    for(let cat in inventory) {
+        let items = inventory[cat].filter(i => cart[i.id + i.n]);
+        if(items.length > 0) {
+            matOut += `h5. _${cat}_\n||_SAP_||_Materials_||_QTY_||\n`;
+            items.forEach(i => {
+                matOut += `|${i.id}|{{${i.n}}}|${cart[i.id + i.n].q.toString().padStart(2,'0')}|\n`;
+            });
             hasItems = true;
         }
     }
+    r += panel("Material List:", hasItems ? matMarkupTrim(matOut) : "None");
 
-    // 3. 生成严格对齐 Jira 的文本
-    let r = `{panel:title=Material List:|borderStyle=solid|borderColor=#000|titleBGColor=#93cc94}\n`;
-    if(hasItems) {
-        for(let cat of ["Copper", "Fibre", "Hardware", "Other"]) {
-            if(sortedMats[cat].length > 0) {
-                // 注意这里 Google Sheet 的拼写: Fibre, Copper 等
-                r += `h5._${cat}_\n||_SAP_||_Materials_||_QTY_||\n`;
-                sortedMats[cat].forEach(i => {
-                    r += `|${i.id}|{{${i.n}}}|${i.q.toString().padStart(2,'0')}|\n`;
-                });
-            }
-        }
-    } else {
-        r += "No materials selected.\n";
-    }
-    r += `{panel}\n`;
+    let nts = val('notes') ? `${val('notes')}**` : "**";
+    r += panel("Additional Notes:", nts);
 
-    const el = document.createElement('textarea'); el.value = r; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-    alert("测试：物料已复制！快去 Jira 粘贴看看分类对不对。");
+    r += panel("Splitter Activation:", `Floor:${val('s_floor')}\nPanel:${val('s_panel')}\nSplitter:${val('s_split')}\nBulkheads Installed:${val('s_bulk')}*`);
+
+    const el = document.createElement('textarea'); el.value = r.trim(); document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    
+    const toast = document.getElementById("toast");
+    toast.className = "show";
+    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
+}
+
+function matMarkupTrim(str) { return str.replace(/\n$/, ""); }
+
+function convertTime(time24) {
+    let [h, m] = time24.split(':');
+    let ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return `${h}:${m} ${ampm}`;
 }
 
 window.onload = render;
